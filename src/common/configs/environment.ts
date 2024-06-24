@@ -17,6 +17,9 @@ export interface IEnvironment {
     CLOUD: {
       API_KEY: string;
     };
+    CLIENT: {
+      ID: string;
+    };
     GEMINI: {
       API_KEY: string;
     };
@@ -42,10 +45,14 @@ export const ENVIRONMENT: IEnvironment = {
     CLOUD: {
       API_KEY: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     },
+    CLIENT: {
+      ID: process.env.GOOGLE_CLIENT_ID,
+    },
     GEMINI: {
       API_KEY: process.env.GEMINI_API_KEY,
     },
   },
+
   APITOOLKIT: {
     API_KEY: process.env.APITOOLKIT_API_KEY,
   },

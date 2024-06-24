@@ -3,9 +3,10 @@ import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/user.dto';
 import { User } from '../user/user.schema';
 import { BaseHelper } from 'src/common/utils/helper';
-import { LoginDto } from './dto/auth.dto';
+import { GoogleLoginDto, LoginDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
+import { ENVIRONMENT } from 'src/common/configs/environment';
 
 @Injectable()
 export class AuthService {
@@ -45,16 +46,15 @@ export class AuthService {
     };
   }
 
-  async googleLogin(payload: any) {
+  async googleLogin(payload: GoogleLoginDto) {
     // Your Google OAuth 2.0 client ID
     const { googleToken } = payload;
-    const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
-    const client = new OAuth2Client(CLIENT_ID);
+    const client = new OAuth2Client(ENVIRONMENT.GOOGLE.CLIENT.ID);
 
     try {
       const ticket = await client.verifyIdToken({
         idToken: googleToken,
-        audience: CLIENT_ID, // Specify the CLIENT_ID of your app
+        audience: ENVIRONMENT.GOOGLE.CLIENT.ID, // Specify the CLIENT_ID of the app that accesses the backend
       });
 
       const payload = ticket.getPayload();

@@ -4,7 +4,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { CreateUserDto } from '../user/dto/user.dto';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
 import { RESPONSE_CONSTANT } from 'src/common/constants/response.constant';
-import { LoginDto } from './dto/auth.dto';
+import { GoogleLoginDto, LoginDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,5 +22,12 @@ export class AuthController {
   @ResponseMessage(RESPONSE_CONSTANT.AUTH.LOGIN_SUCCESS)
   async login(@Body() payload: LoginDto) {
     return this.authService.login(payload);
+  }
+
+  @Public()
+  @Post('/google-login')
+  @ResponseMessage(RESPONSE_CONSTANT.AUTH.LOGIN_SUCCESS)
+  async googleLogin(@Body() payload: GoogleLoginDto) {
+    return this.authService.googleLogin(payload);
   }
 }

@@ -10,3 +10,8 @@ export class LoginDto {
   @IsString()
   password: string;
 }
+
+export class GoogleLoginDto {
+  @IsString()
+  googleToken: string;
+}
