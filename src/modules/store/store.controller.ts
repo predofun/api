@@ -2,15 +2,16 @@ import { Controller, Post, Get, Put, Delete, Body, Param, UseGuards } from '@nes
 import { StoreService } from './store.service';
 import { CreateStoreDto, UpdateStoreDto } from './dto/store.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.decorator';
 
 @Controller('store')
 export class StoreController {
-  constructor(private readonly storeService: StoreService) { }
+  constructor(private readonly storeService: StoreService,) { }
   
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createStoreDto: CreateStoreDto) {
-    return this.storeService.create(createStoreDto);
+  create(@Body() createStoreDto: CreateStoreDto, @LoggedInUserDecorator() user: {id: string}) {
+    return this.storeService.create(createStoreDto, user.id);
   }
 
   @Get()
