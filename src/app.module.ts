@@ -5,12 +5,16 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ENVIRONMENT } from './common/configs/environment';
+import { StoreModule } from './modules/store/store.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(ENVIRONMENT.DB.URL),
     AuthModule,
     UserModule,
+    StoreModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
