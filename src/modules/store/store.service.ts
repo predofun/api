@@ -9,34 +9,45 @@ import { User, UserDocument } from '../user/user.schema';
 export class StoreService {
   constructor(
     @InjectModel(Store.name) private storeModel: Model<StoreDocument>,
-    @InjectModel(User.name) private userModel: Model<UserDocument>
-  ) { }
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+  ) {}
 
   async create(createStoreDto: CreateStoreDto, userId: string): Promise<Store> {
     const user = await this.userModel.findById(userId);
+    console.log(user);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const store = await this.storeModel.create({ ...createStoreDto, user: user.id });
+    const store = await this.storeModel.create({
+      ...createStoreDto,
+      user: user.id,
+    });
 
-    user.stores.push(store.id);
-    await user.save();
+    if (!store) {
+      throw new NotFoundException('Error in creating store, please try again.');
+    }
+    console.log(store.id);
+
+    await this.userModel.findByIdAndUpdate(user.id, {
+      $push: { stores: store.id },
+    });
     return store;
   }
-
   async findAll(): Promise<Store[]> {
-    return await this.storeModel.find()
+    return await this.storeModel.find();
   }
 
   async findOne(id: string): Promise<Store> {
-    return await this.storeModel.findById(id)
+    return await this.storeModel.findById(id);
   }
 
   async update(id: string, updateStoreDto: UpdateStoreDto): Promise<Store> {
-    return await this.storeModel.findByIdAndUpdate(id, updateStoreDto, { new: true })
+    return await this.storeModel.findByIdAndUpdate(id, updateStoreDto, {
+      new: true,
+    });
   }
 
   async delete(id: string): Promise<Store> {
-    return await this.storeModel.findByIdAndDelete(id)
+    return await this.storeModel.findByIdAndDelete(id);
   }
 }
