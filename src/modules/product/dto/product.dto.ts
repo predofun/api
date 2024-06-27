@@ -1,6 +1,16 @@
-import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  IsMongoId,
+} from 'class-validator';
 
 export class CreateProductDto {
+  @IsMongoId()
+  @IsNotEmpty()
+  storeId: string;
+
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -9,14 +19,12 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
-
   @IsString()
   @IsNotEmpty()
   price: string;
+}
 
-} 
-
-export class UpdateProductDto{
+export class UpdateProductDto {
   @IsString()
   @IsOptional()
   name: string;

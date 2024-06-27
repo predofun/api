@@ -24,6 +24,11 @@ export interface IEnvironment {
       API_KEY: string;
     };
   };
+  CLOUDINARY: {
+    CLOUD_NAME: string;
+    API_KEY: string;
+    API_SECRET: string;
+  };
   APITOOLKIT: {
     API_KEY: string;
   };
@@ -51,6 +56,11 @@ export const ENVIRONMENT: IEnvironment = {
     GEMINI: {
       API_KEY: process.env.GEMINI_API_KEY,
     },
+  },
+  CLOUDINARY: {
+    CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
+    API_KEY: process.env.CLOUDINARY_CLOUD_API_KEY!,
+    API_SECRET: process.env.CLOUDINARY_CLOUD_API_SECRET!,
   },
 
   APITOOLKIT: {

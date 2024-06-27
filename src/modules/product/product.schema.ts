@@ -16,6 +16,9 @@ export class Product {
   description: string;
 
   @Prop({ required: true })
+  sizes: string[];
+
+  @Prop({ required: true })
   images: string[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true })

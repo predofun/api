@@ -19,10 +19,10 @@ export class UserController {
     return this.userService.getUser(user.id);
   }
 
-  @Get('/appointments')
+  @Get('/store')
   @ResponseMessage(RESPONSE_CONSTANT.APPOINTMENT.GET_APPOINTMENT_SUCCESS)
-  async getAllUserAppointments(@LoggedInUserDecorator() user: any) {
-    return this.userService.getAllAppointmentsByUser(user.id);
+  async getAllUserStore(@LoggedInUserDecorator() user: any) {
+    return this.userService.getAllStores(user.id);
   }
 
   @Put('/')

@@ -13,13 +13,16 @@ export class Store {
   @Prop({ required: true })
   url: string;
 
+  @Prop({ required: true })
+  contractId: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user: User;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   })
-  product: Product[];
+  products: Product[];
 }
 
 export const StoreSchema = SchemaFactory.createForClass(Store);

@@ -12,7 +12,7 @@ export class StoreService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async create(createStoreDto: CreateStoreDto, userId: string): Promise<Store> {
+  async create(createStoreDto: CreateStoreDto, userId: string, file: Express.Multer.File): Promise<Store> {
     const user = await this.userModel.findById(userId);
     console.log(user);
     if (!user) {
@@ -26,7 +26,6 @@ export class StoreService {
     if (!store) {
       throw new NotFoundException('Error in creating store, please try again.');
     }
-    console.log(store.id);
 
     await this.userModel.findByIdAndUpdate(user.id, {
       $push: { stores: store.id },

@@ -1,18 +1,34 @@
-import { Controller, UseGuards, Post, Get, Put, Delete, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Post,
+  Get,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseInterceptors,
+  UploadedFiles,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
-import { ProductService } from './product.service'; 
+import { ProductService } from './product.service';
 import { ProductDocument } from './product.schema';
-
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 @Controller('product')
 export class ProductController {
-  constructor(private productService: ProductService) { }
-  
+  constructor(private productService: ProductService) {}
+
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createProductDto: CreateProductDto): Promise<ProductDocument> {
-    return this.productService.create(createProductDto);
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 5 }]))
+  create(
+    @Body() payload: CreateProductDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<ProductDocument> {
+    return this.productService.create(payload, files);
   }
 
   @Get()
@@ -27,8 +43,11 @@ export class ProductController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductDocument | null> {
-    return this.productService.update(id, updateProductDto);
+  update(
+    @Param('id') id: string,
+    @Body() payload: UpdateProductDto,
+  ): Promise<ProductDocument | null> {
+    return this.productService.update(id, payload);
   }
 
   @Delete(':id')

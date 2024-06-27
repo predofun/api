@@ -23,4 +23,10 @@ export const RESPONSE_CONSTANT = {
     UPDATE_APPOINTMENT_SUCCESS: 'Appointment Updated Successfully',
     DELETE_APPOINTMENT_SUCCESS: 'Appointment Deleted Successfully'
   },
+  STORE: {
+    CREATE_STORE_SUCCESS: 'Store Created Successfully',
+    GET_STORE_SUCCESS: 'Store Retrieved Successfully',
+    UPDATE_STORE_SUCCESS: 'Store Updated Successfully',
+    DELETE_STORE_SUCCESS: 'Store Deleted Successfully'
+  }
 };

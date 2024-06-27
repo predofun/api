@@ -22,11 +22,8 @@ export class UserService {
     return await this.userModel.findById(userId).select('-password');
   }
 
-  async getAllAppointmentsByUser(userId: string) {
-    return await this.userModel
-      .findById(userId)
-      .populate('appointments')
-      .select('-password');
+  async getAllStores(userId: string): Promise<User> {
+    return (await this.userModel.findById(userId)).populate('stores');
   }
 
   async getUserByEmailIncludePassword(email: string) {
@@ -37,17 +34,6 @@ export class UserService {
     return await this.userModel
       .findByIdAndUpdate(userId, payload, { new: true })
       .select('-password');
-  }
-
-  async addAppointmentToUser(
-    userId: string,
-    appointmentId: string,
-  ): Promise<User> {
-    return await this.userModel.findByIdAndUpdate(
-      userId,
-      { $push: { appointments: appointmentId } },
-      { new: true },
-    );
   }
 
   async deleteUser(userId: string): Promise<User> {
