@@ -10,11 +10,11 @@ export class Store {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   url: string;
 
-  @Prop({ required: true })
-  contractId: string;
+  @Prop({ required: true, unique: true })
+  tokenId: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user: User;

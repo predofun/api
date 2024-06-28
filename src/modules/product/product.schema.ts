@@ -15,6 +15,9 @@ export class Product {
   @Prop({ required: true })
   description: string;
 
+  @Prop({ required: true, unique: true })
+  tokenId: string;
+
   @Prop({ required: true })
   sizes: string[];
 

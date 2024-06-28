@@ -21,6 +21,14 @@ export class CreateProductDto {
 
   @IsString()
   @IsNotEmpty()
+  tokenId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  sizes: string;
+
+  @IsString()
+  @IsNotEmpty()
   price: string;
 }
 

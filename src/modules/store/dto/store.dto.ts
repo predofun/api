@@ -28,6 +28,16 @@ export class CreateStoreDto {
   @IsCoinswagShopUrl()
   url: string;
 
+  @IsString()
+  @IsOptional()
+  tokenId: string;
+
+}
+
+export class GetAllProductsDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
 }
 
 export class UpdateStoreDto {

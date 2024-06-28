@@ -23,10 +23,10 @@ export class ProductController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 5 }]))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 5 }]))
   create(
     @Body() payload: CreateProductDto,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles() files: { images: Express.Multer.File[] },
   ): Promise<ProductDocument> {
     return this.productService.create(payload, files);
   }

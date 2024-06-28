@@ -61,6 +61,7 @@ export function uploadFiles(
 
     return Promise.all(promises);
   } catch (error) {
+    console.log(error)
     throw new ConflictException('Error in uploading files');
   }
 }

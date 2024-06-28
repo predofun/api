@@ -1,39 +1,69 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Store, StoreDocument } from './store.schema';
-import { CreateStoreDto, UpdateStoreDto } from './dto/store.dto';
+import {
+  CreateStoreDto,
+  GetAllProductsDto,
+  UpdateStoreDto,
+} from './dto/store.dto';
 import { User, UserDocument } from '../user/user.schema';
+import { Product, ProductDocument } from '../product/product.schema';
 
 @Injectable()
 export class StoreService {
   constructor(
     @InjectModel(Store.name) private storeModel: Model<StoreDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
-  async create(createStoreDto: CreateStoreDto, userId: string, file: Express.Multer.File): Promise<Store> {
-    const user = await this.userModel.findById(userId);
-    console.log(user);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    const store = await this.storeModel.create({
-      ...createStoreDto,
-      user: user.id,
-    });
+  async create(
+    createStoreDto: CreateStoreDto,
+    userId: string,
+    file: Express.Multer.File,
+  ): Promise<Store> {
+    try {
+      const user = await this.userModel.findById(userId);
 
-    if (!store) {
-      throw new NotFoundException('Error in creating store, please try again.');
-    }
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const store = await this.storeModel.create({
+        ...createStoreDto,
+        user: user.id,
+      });
 
-    await this.userModel.findByIdAndUpdate(user.id, {
-      $push: { stores: store.id },
-    });
-    return store;
+      if (!store) {
+        throw new NotFoundException(
+          'Error in creating store, please try again.',
+        );
+      }
+
+      await this.userModel.findByIdAndUpdate(user.id, {
+        $push: { stores: store.id },
+      });
+      return store;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error in creating store, please try again.',
+      );
+    }
   }
   async findAll(): Promise<Store[]> {
     return await this.storeModel.find();
+  }
+
+  async getAllProducts(payload: GetAllProductsDto) {
+    const { id } = payload;
+
+    const store = await this.storeModel.findById(id).populate('products');
+
+    return store.products;
   }
 
   async findOne(id: string): Promise<Store> {

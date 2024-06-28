@@ -16,20 +16,25 @@ export class ProductService {
 
   async create(
     payload: CreateProductDto,
-    files: Express.Multer.File[],
+    files: { images: Express.Multer.File[] },
   ): Promise<ProductDocument> {
     const { storeId } = payload;
+    const { images } = files;
 
     const store = await this.storeModel.findById(storeId);
 
     if (!storeId) throw new BadRequestException('Store not found');
 
-    const images = await uploadFiles('products', files);
+    if (!files) throw new BadRequestException('Please upload at least one image');
 
-    const imageUrls = images.map((image: any) => image.secure_url);
+    const uploadedImages = await uploadFiles(`${store.name}/products`, images);
+
+    const imageUrls = uploadedImages.map((image: any) => image.secure_url);
 
     const createdProduct = await this.productModel.create({
       ...payload,
+      store: storeId,
+      sizes: payload.sizes.split(','),
       images: imageUrls,
     });
 
