@@ -14,7 +14,7 @@ export class Store {
   url: string;
 
   @Prop({ required: true, unique: true })
-  tokenId: string;
+  owner: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user: User;

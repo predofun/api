@@ -20,7 +20,7 @@ export class UserController {
   }
 
   @Get('/store')
-  @ResponseMessage(RESPONSE_CONSTANT.APPOINTMENT.GET_APPOINTMENT_SUCCESS)
+  @ResponseMessage(RESPONSE_CONSTANT.USER.GET_ALL_USER_STORES_SUCCESS)
   async getAllUserStore(@LoggedInUserDecorator() user: any) {
     return this.userService.getAllStores(user.id);
   }

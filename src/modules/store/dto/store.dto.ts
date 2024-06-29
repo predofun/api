@@ -30,7 +30,7 @@ export class CreateStoreDto {
 
   @IsString()
   @IsOptional()
-  tokenId: string;
+  owner: string;
 
 }
 
