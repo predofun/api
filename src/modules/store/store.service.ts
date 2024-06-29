@@ -23,7 +23,7 @@ export class StoreService {
   ) {}
 
   async create(
-    createStoreDto: CreateStoreDto,
+    payload: CreateStoreDto,
     userId: string,
     file: Express.Multer.File,
   ): Promise<Store> {
@@ -34,11 +34,12 @@ export class StoreService {
         throw new NotFoundException('User not found');
       }
       const store = await this.storeModel.create({
-        ...createStoreDto,
+        ...payload,
         user: user.id,
       });
 
       if (!store) {
+        console.log(store)
         throw new NotFoundException(
           'Error in creating store, please try again.',
         );

@@ -35,7 +35,7 @@ export class StoreController {
     @UploadedFile() file: Express.Multer.File,
     @LoggedInUserDecorator() user: { id: string },
   ) {
-    console.log(payload.name);
+    console.log(payload);
     return this.storeService.create(payload, user.id, file);
   }
 
