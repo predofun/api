@@ -27,16 +27,16 @@ export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  // @UseInterceptors(FileInterceptor('file'))
   @ResponseMessage(RESPONSE_CONSTANT.STORE.CREATE_STORE_SUCCESS)
   @UseGuards(JwtAuthGuard)
   create(
     @Body() payload: CreateStoreDto,
-    @UploadedFile() file: Express.Multer.File,
+    // @UploadedFile() file: Express.Multer.File,
     @LoggedInUserDecorator() user: { id: string },
   ) {
     console.log(payload);
-    return this.storeService.create(payload, user.id, file);
+    return this.storeService.create(payload, user.id);
   }
 
   @Get()

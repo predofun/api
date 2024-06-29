@@ -22,11 +22,7 @@ export class StoreService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
-  async create(
-    payload: CreateStoreDto,
-    userId: string,
-    file: Express.Multer.File,
-  ): Promise<Store> {
+  async create(payload: CreateStoreDto, userId: string): Promise<Store> {
     try {
       const user = await this.userModel.findById(userId);
 
@@ -39,7 +35,7 @@ export class StoreService {
       });
 
       if (!store) {
-        console.log(store)
+        console.log(store);
         throw new NotFoundException(
           'Error in creating store, please try again.',
         );
@@ -50,6 +46,7 @@ export class StoreService {
       });
       return store;
     } catch (error) {
+      console.log(error.code);
       throw new InternalServerErrorException(
         'Error in creating store, please try again.',
       );
