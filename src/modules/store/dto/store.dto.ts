@@ -32,6 +32,14 @@ export class CreateStoreDto {
   @IsOptional()
   owner: string;
 
+  @IsString()
+  @IsOptional()
+  storeAddress: string;
+
+  @IsString()
+  @IsOptional()
+  tokenId: string;
+
 }
 
 export class GetAllProductsDto {
@@ -48,6 +56,18 @@ export class UpdateStoreDto {
   @IsString()
   @IsOptional()
   url?: string;
+
+  @IsString()
+  @IsOptional()
+  owner?: string;
+
+  @IsString()
+  @IsOptional()
+  storeAddress?: string;
+
+  @IsString()
+  @IsOptional()
+  tokenId?: string;
 
   @IsArray()
   @Type(() => Product)

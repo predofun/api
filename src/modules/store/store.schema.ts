@@ -16,6 +16,12 @@ export class Store {
   @Prop({ required: true, unique: true })
   owner: string;
 
+  @Prop({ required: true, unique: true })
+  tokenId: string;
+
+  @Prop({ required: true, unique: true })
+  storeAddress: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user: User;
 
