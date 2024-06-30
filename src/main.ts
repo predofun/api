@@ -7,6 +7,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filter/filter';
 import { ENVIRONMENT } from './common/configs/environment';
 import { ResponseTransformerInterceptor } from './common/interceptors/response.interceptor';
+import APIToolkit from 'apitoolkit-express';
 
 // import { audioToText } from './common/utils/speechmatics';
 // import { readFileSync } from 'fs';
@@ -15,9 +16,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
+  const apiToolkitClient = APIToolkit.NewClient({
+    apiKey: ENVIRONMENT.APITOOLKIT.API_KEY,
+    debug: false,
+    tags: ['environment: production', 'region: us-east-1'],
+    serviceVersion: 'v2.0',
+  });
 
   app.use(helmet());
   app.use(express.json({ limit: '50mb' }));
+  app.use(apiToolkitClient.expressMiddleware);
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   /**

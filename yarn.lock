@@ -1885,7 +1885,7 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-apitoolkit-express@^2.3.1:
+apitoolkit-express@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/apitoolkit-express/-/apitoolkit-express-2.4.0.tgz#9b8e0632c42fc7493cc36ee0d80f010b8ea9a834"
   integrity sha512-nQePxjfsTNo7sjTbnouWc2UfbYE+BWovot1rDInWY3Mm9/FmUM1Ux6OKt6y2b3IgBuHZFIOXXcBXATSgv0lrJA==
