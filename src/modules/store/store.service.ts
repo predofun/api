@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -46,7 +47,9 @@ export class StoreService {
       });
       return store;
     } catch (error) {
-      console.log(error.code);
+      if (error.code === 11000) {
+        throw new ConflictException('Store already exists');
+      }
       throw new InternalServerErrorException(
         'Error in creating store, please try again.',
       );

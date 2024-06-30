@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { Product, ProductDocument } from './product.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
@@ -16,32 +20,41 @@ export class ProductService {
 
   async create(
     payload: CreateProductDto,
-    files: { images: Express.Multer.File[] },
+    images: Array<Express.Multer.File>,
   ): Promise<ProductDocument> {
     const { storeId } = payload;
-    const { images } = files;
 
-    const store = await this.storeModel.findById(storeId);
+    try {
+      const store = await this.storeModel.findById(storeId);
 
-    if (!storeId) throw new BadRequestException('Store not found');
+      if (!storeId) throw new BadRequestException('Store not found');
 
-    if (!files) throw new BadRequestException('Please upload at least one image');
+      if (!images)
+        throw new BadRequestException('Please upload at least one image');
 
-    const uploadedImages = await uploadFiles(`${store.name}/products`, images);
+      const uploadedImages = await uploadFiles(
+        `${store.name}/products`,
+        images,
+      );
 
-    const imageUrls = uploadedImages.map((image: any) => image.secure_url);
+      const imageUrls = uploadedImages.map((image: any) => image.secure_url);
 
-    const createdProduct = await this.productModel.create({
-      ...payload,
-      store: storeId,
-      sizes: payload.sizes.split(','),
-      images: imageUrls,
-    });
+      const createdProduct = await this.productModel.create({
+        ...payload,
+        store: storeId,
+        sizes: payload.sizes.split(','),
+        images: imageUrls,
+      });
 
-    store.products.push(createdProduct);
-    await store.save();
+      store.products.push(createdProduct);
+      await store.save();
 
-    return createdProduct;
+      return createdProduct;
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new ConflictException('Product already exists');
+      }
+    }
   }
 
   async findAll(): Promise<ProductDocument[]> {

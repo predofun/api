@@ -21,6 +21,9 @@ export class Product {
   @Prop({ required: true })
   sizes: string[];
 
+  @Prop({ default: true })
+  isActive: boolean;
+
   @Prop({ required: true })
   images: string[];
 

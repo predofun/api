@@ -4,6 +4,8 @@ import {
   IsOptional,
   IsArray,
   IsMongoId,
+  IsBoolean,
+  IsEnum,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -22,6 +24,12 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   tokenId: string;
+
+  
+  
+  @IsEnum(['true', 'false'])
+  @IsOptional()
+  isActive: boolean;
 
   @IsString()
   @IsNotEmpty()
@@ -48,4 +56,12 @@ export class UpdateProductDto {
   @IsString()
   @IsOptional()
   image: string;
+
+  @IsString()
+  @IsOptional()
+  sizes: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isActive: boolean;
 }

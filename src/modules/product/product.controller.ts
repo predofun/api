@@ -14,7 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ProductService } from './product.service';
 import { ProductDocument } from './product.schema';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 
 @Controller('product')
@@ -22,13 +22,14 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Post()
+  @UseInterceptors(FilesInterceptor('images'))
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 5 }]))
   create(
     @Body() payload: CreateProductDto,
-    @UploadedFiles() files: { images: Express.Multer.File[] },
+    @UploadedFiles() images: Array<Express.Multer.File>,
   ): Promise<ProductDocument> {
-    return this.productService.create(payload, files);
+    console.log(images);
+    return this.productService.create(payload, images);
   }
 
   @Get()
