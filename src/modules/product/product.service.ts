@@ -65,6 +65,9 @@ export class ProductService {
   async findOne(id: string): Promise<ProductDocument | null> {
     return await this.productModel.findById(id);
   }
+  async findByStoreName(name: string): Promise<ProductDocument[]> {
+    return await this.productModel.findOne({ name });
+  }
 
   async update(
     id: string,

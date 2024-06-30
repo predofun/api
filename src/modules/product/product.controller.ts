@@ -14,7 +14,11 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ProductService } from './product.service';
 import { ProductDocument } from './product.schema';
-import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 
 @Controller('product')
@@ -40,6 +44,10 @@ export class ProductController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<ProductDocument | null> {
     return this.productService.findOne(id);
+  }
+  @Get('/name')
+  findByStoreName(@Param('name') name: string): Promise<ProductDocument[]> {
+    return this.productService.findByStoreName(name);
   }
 
   @Put(':id')
