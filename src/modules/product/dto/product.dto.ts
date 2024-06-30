@@ -6,6 +6,7 @@ import {
   IsMongoId,
   IsBoolean,
   IsEnum,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -25,8 +26,10 @@ export class CreateProductDto {
   @IsNotEmpty()
   tokenId: string;
 
-  
-  
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
+
   @IsEnum(['true', 'false'])
   @IsOptional()
   isActive: boolean;
