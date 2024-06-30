@@ -26,7 +26,8 @@ export class CreateProductDto {
   @IsNotEmpty()
   tokenId: string;
 
-  @IsNumber()
+
+  @IsString()
   @IsNotEmpty()
   quantity: number;
 
@@ -63,6 +64,10 @@ export class UpdateProductDto {
   @IsString()
   @IsOptional()
   sizes: string;
+
+  @IsNumber()
+  @IsOptional()
+  quantity: number;
 
   @IsBoolean()
   @IsOptional()

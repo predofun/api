@@ -42,6 +42,7 @@ export class ProductService {
       const createdProduct = await this.productModel.create({
         ...payload,
         store: storeId,
+        quantity: Number(payload.quantity),
         sizes: payload.sizes.split(','),
         images: imageUrls,
       });
