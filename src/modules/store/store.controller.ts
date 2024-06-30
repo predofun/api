@@ -9,6 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { StoreService } from './store.service';
 import {
@@ -21,6 +22,7 @@ import { LoggedInUserDecorator } from 'src/common/decorators/logged_in_user.deco
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
 import { RESPONSE_CONSTANT } from 'src/common/constants/response.constant';
+import { StoreDocument } from './store.schema';
 
 @Controller('store')
 export class StoreController {
@@ -44,6 +46,11 @@ export class StoreController {
   findAll() {
     return this.storeService.findAll();
   }
+  
+  @Get('/find')
+  findByStoreName(@Query('name') name: string): Promise<StoreDocument[]> {
+    return this.storeService.findByStoreName(name);
+  }
 
   @Get(':id')
   @ResponseMessage(RESPONSE_CONSTANT.STORE.GET_STORE_SUCCESS)
@@ -56,6 +63,7 @@ export class StoreController {
   getAllProducts(@Param() payload: GetAllProductsDto) {
     return this.storeService.getAllProducts(payload);
   }
+
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
