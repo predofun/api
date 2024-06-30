@@ -41,13 +41,14 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<ProductDocument | null> {
-    return this.productService.findOne(id);
-  }
   @Get('/name')
   findByStoreName(@Param('name') name: string): Promise<ProductDocument[]> {
     return this.productService.findByStoreName(name);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string): Promise<ProductDocument | null> {
+    return this.productService.findOne(id);
   }
 
   @Put(':id')
