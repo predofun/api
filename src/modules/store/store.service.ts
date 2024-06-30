@@ -70,9 +70,8 @@ export class StoreService {
   async findOne(id: string): Promise<Store> {
     return await this.storeModel.findById(id).populate('products');
   }
-  async findByStoreName(name: string): Promise<StoreDocument[]> {
-    console.log(name)
-    return await this.storeModel.findOne({ name });
+  async findByStoreName(name: string): Promise<StoreDocument> {
+    return await this.storeModel.findOne({ name }).populate('products');
   }
   async update(id: string, updateStoreDto: UpdateStoreDto): Promise<Store> {
     return await this.storeModel.findByIdAndUpdate(id, updateStoreDto, {

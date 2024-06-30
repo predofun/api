@@ -46,9 +46,9 @@ export class StoreController {
   findAll() {
     return this.storeService.findAll();
   }
-  
+
   @Get('/find')
-  findByStoreName(@Query('name') name: string): Promise<StoreDocument[]> {
+  findByStoreName(@Query('name') name: string): Promise<StoreDocument> {
     return this.storeService.findByStoreName(name);
   }
 
@@ -63,7 +63,6 @@ export class StoreController {
   getAllProducts(@Param() payload: GetAllProductsDto) {
     return this.storeService.getAllProducts(payload);
   }
-
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
