@@ -26,6 +26,9 @@ export class CreateProductDto {
   @IsNotEmpty()
   tokenId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  imageUri: string;
 
   @IsString()
   @IsNotEmpty()
@@ -60,6 +63,10 @@ export class UpdateProductDto {
   @IsString()
   @IsOptional()
   image: string;
+
+  @IsString()
+  @IsOptional()
+  imageUri: string;
 
   @IsString()
   @IsOptional()

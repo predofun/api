@@ -29,6 +29,8 @@ export class Product {
 
   @Prop({ required: true })
   images: string[];
+  @Prop()
+  imageUri: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true })
   store: Store;
