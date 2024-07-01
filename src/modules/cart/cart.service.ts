@@ -37,11 +37,15 @@ export class CartService {
       );
     }
   }
-  
+
   async getCartById(payload: GetCartDto) {
     const { id } = payload;
 
     return await this.cartModel.findById(id);
+  }
+
+  async getCartByWalletAddress(walletAddress: string) {
+    return await this.cartModel.findOne({ walletAddress });
   }
 
   async getAllProducts(payload: GetCartDto) {
@@ -57,9 +61,13 @@ export class CartService {
   }
 
   async update(id: string, payload: UpdateCartDto): Promise<Cart> {
-    return await this.cartModel.findByIdAndUpdate(id, payload, {
-      new: true,
-    });
+    return await this.cartModel.findByIdAndUpdate(
+      id,
+      { $Push: { products: payload } },
+      {
+        new: true,
+      },
+    );
   }
 
   async delete(id: string): Promise<Cart> {

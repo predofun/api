@@ -12,6 +12,7 @@ import { Product } from '../../product/product.schema';
 export interface Item {
   product: Product;
   size: string;
+  quantity: number;
 }
 export class CreateCartDto {
   @IsString()
@@ -39,6 +40,7 @@ export class UpdateCartDto {
   id: string;
 
   @IsArray()
+  @IsNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => Object)
   @IsOptional()

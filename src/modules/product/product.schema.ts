@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Store } from '../store/store.schema';
+import { CryptoMerchType } from './product.enum';
 
 export type ProductDocument = Product & Document;
 
@@ -20,6 +21,9 @@ export class Product {
 
   @Prop({ required: true })
   sizes: string[];
+
+  @Prop({ enum: CryptoMerchType })
+  type: string;
 
   @Prop({ required: true })
   quantity: number;

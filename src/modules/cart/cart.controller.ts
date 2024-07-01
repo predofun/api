@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CreateCartDto, GetCartDto, UpdateCartDto } from './dto/cart.dto';
@@ -32,6 +33,12 @@ export class CartController {
   @ResponseMessage(RESPONSE_CONSTANT.CART.GET_CART_SUCCESS)
   findOne(@Param() payload: GetCartDto) {
     return this.cartService.getCartById(payload);
+  }
+
+  @Get('/find')
+  @ResponseMessage(RESPONSE_CONSTANT.CART.GET_CART_SUCCESS)
+  findOneByWalletAddress(@Query('walletAddress') walletAddress: string) {
+    return this.cartService.getCartByWalletAddress(walletAddress);
   }
 
   @Get(':id/products')
