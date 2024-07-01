@@ -55,12 +55,14 @@ export class StoreController {
   }
 
   @Get(':id')
+  @Public()
   @ResponseMessage(RESPONSE_CONSTANT.STORE.GET_STORE_SUCCESS)
   findOne(@Param('id') id: string) {
     return this.storeService.findOne(id);
   }
 
   @Get(':id/products')
+  @Public()
   @ResponseMessage(RESPONSE_CONSTANT.STORE.GET_ALL_PRODUCTS_SUCCESS)
   getAllProducts(@Param() payload: GetAllProductsDto) {
     return this.storeService.getAllProducts(payload);

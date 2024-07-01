@@ -14,12 +14,14 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateOrderDto } from './dto/order.dto';
 import { OrderService } from './order.service';
 import { OrderDocument } from './order.schema';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
   @Post()
+  @Public()
   create(@Body() payload: CreateOrderDto): Promise<OrderDocument> {
     return this.orderService.create(payload);
   }

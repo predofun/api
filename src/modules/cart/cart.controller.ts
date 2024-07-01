@@ -12,8 +12,10 @@ import { CartService } from './cart.service';
 import { CreateCartDto, GetCartDto, UpdateCartDto } from './dto/cart.dto';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
 import { RESPONSE_CONSTANT } from 'src/common/constants/response.constant';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('cart')
+@Public()
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
