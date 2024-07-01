@@ -18,11 +18,14 @@ export class CartService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
-  async create(createCartDto: CreateCartDto): Promise<Cart> {
+  async create(payload: CreateCartDto): Promise<Cart> {
     try {
+      console.log(payload);
       const cart = await this.cartModel.create({
-        ...createCartDto,
-      });
+        walletAddress: payload.walletAddress,
+        items: payload.items,
+      })
+      console.log(cart, 'stuff');
 
       if (!cart) {
         throw new NotFoundException(

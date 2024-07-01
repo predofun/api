@@ -7,10 +7,9 @@ import {
   IsMongoId,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Product } from '../../product/product.schema';
 
 export interface Item {
-  product: Product;
+  product: string;
   size: string;
   quantity: number;
 }
@@ -20,8 +19,7 @@ export class CreateCartDto {
   walletAddress: string;
 
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Object)
+  // @ValidateNested({ each: true })
   @IsNotEmpty()
   items: Item[];
 }
