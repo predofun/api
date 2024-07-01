@@ -18,6 +18,11 @@ export class CreateCartDto {
   @IsNotEmpty()
   walletAddress: string;
 
+  @IsString()
+  @IsMongoId()
+  @IsNotEmpty()
+  store: string;
+
   @IsArray()
   // @ValidateNested({ each: true })
   @IsNotEmpty()

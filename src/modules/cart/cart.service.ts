@@ -19,26 +19,16 @@ export class CartService {
   ) {}
 
   async create(payload: CreateCartDto): Promise<Cart> {
-    try {
-      console.log(payload);
-      const cart = await this.cartModel.create({
-        walletAddress: payload.walletAddress,
-        items: payload.items,
-      })
-      console.log(cart, 'stuff');
+    const cart = await this.cartModel.create({
+      ...payload,
+    });
 
-      if (!cart) {
-        throw new NotFoundException(
-          'Error in creating cart, please try again.',
-        );
-      }
-
-      return cart;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Error in creating cart, please try again.',
-      );
+    if (!cart) {
+      console.log(cart);
+      throw new NotFoundException('Error in creating cart, please try again.');
     }
+
+    return cart;
   }
 
   async getCartById(payload: GetCartDto) {
