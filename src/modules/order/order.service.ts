@@ -12,6 +12,7 @@ import { StoreService } from '../store/store.service';
 import { Store, StoreDocument } from '../store/store.schema';
 import { Cart, CartDocument } from '../cart/cart.schema';
 import { Product } from '../product/product.schema';
+import { Customer, CustomerDocument } from '../customer/customer.schema';
 
 @Injectable()
 export class OrderService {
@@ -19,6 +20,7 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Store.name) private storeModel: Model<StoreDocument>,
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
+    @InjectModel(Customer.name) private customerModel: Model<CustomerDocument>,
   ) {}
 
   async create(payload: CreateOrderDto): Promise<OrderDocument> {
@@ -41,6 +43,11 @@ export class OrderService {
       const orderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
       const status = 'pending';
       const orderDate = new Date();
+      const existingCustomer = await this.customerModel.findOne({
+        email: customer.email,
+      });
+      const newCustomer =
+        existingCustomer ?? (await this.customerModel.create(customer));
 
       // Calculate the total amount of the cart items
       const createdOrder = await this.orderModel.create({
@@ -49,7 +56,7 @@ export class OrderService {
         tokenId,
         status,
         currency: 'USD', // Default currency
-        customer,
+        customer: newCustomer._id,
         shippingInfo,
         priceBreakdown,
         cart,

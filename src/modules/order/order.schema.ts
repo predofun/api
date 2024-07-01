@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Store } from '../store/store.schema';
 import { Cart } from '../cart/cart.schema';
+import { Customer } from '../customer/customer.schema';
 
 export type OrderDocument = Order & Document;
 
@@ -22,16 +23,8 @@ export class Order {
   @Prop({ default: 'USD' })
   currency: string;
 
-  @Prop(
-    raw({
-      customerId: String,
-      firstName: String,
-      lastName: String,
-      email: String,
-      phone: String,
-    }),
-  )
-  customer: Record<string, any>;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Customer' })
+  customer: Customer;
 
   @Prop(
     raw({
