@@ -23,6 +23,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ResponseMessage } from 'src/common/decorators/response.decorator';
 import { RESPONSE_CONSTANT } from 'src/common/constants/response.constant';
 import { StoreDocument } from './store.schema';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('store')
 export class StoreController {
@@ -48,6 +49,7 @@ export class StoreController {
   }
 
   @Get('/find')
+  @Public()
   findByStoreName(@Query('name') name: string): Promise<StoreDocument> {
     return this.storeService.findByStoreName(name);
   }
