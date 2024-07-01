@@ -34,6 +34,10 @@ export class CreateOrderDto {
   @IsNotEmpty()
   tokenId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  txhash: string;
+
   @ValidateNested()
   @Type(() => CustomerDto)
   @IsNotEmpty()

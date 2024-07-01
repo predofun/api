@@ -29,6 +29,7 @@ export class OrderService {
       customer,
       shippingInfo,
       priceBreakdown,
+      txhash,
       cart,
     } = payload;
 
@@ -52,14 +53,19 @@ export class OrderService {
         shippingInfo,
         priceBreakdown,
         cart,
+        txhash,
         orderDate,
         store: storeId,
+      });
+
+      await this.storeModel.findByIdAndUpdate(store.id, {
+        $push: { orders: createdOrder._id },
       });
 
       return createdOrder;
     } catch (error) {
       if (error.code === 11000) {
-        throw new ConflictException('Product already exists');
+        throw new ConflictException('Order already exists');
       }
     }
   }

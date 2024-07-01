@@ -14,11 +14,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { CreateOrderDto } from './dto/order.dto';
 import { OrderService } from './order.service';
 import { OrderDocument } from './order.schema';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express';
 
 @Controller('order')
 export class OrderController {
