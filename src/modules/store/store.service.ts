@@ -64,7 +64,7 @@ export class StoreService {
 
     const store = await this.storeModel.findById(id).populate('products');
 
-    return store.products;
+    return store?.products ?? [];
   }
 
   async findOne(id: string): Promise<Store> {

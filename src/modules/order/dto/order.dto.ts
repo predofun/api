@@ -11,47 +11,45 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-
 export class PriceBreakdownDto {
   @IsNumber()
   @IsNotEmpty()
   subtotal: number;
-  
+
   @IsNumber()
   @IsNotEmpty()
   tax: number;
-  
+
   @IsNumber()
   @IsNotEmpty()
   shippingCost: number;
-  
+
   @IsNumber()
   @IsOptional()
   discount?: number;
-  
+
   @IsNumber()
   @IsNotEmpty()
   total: number;
 }
 
-
 export class AddressDto {
   @IsString()
   @IsNotEmpty()
   street: string;
-  
+
   @IsString()
   @IsNotEmpty()
   city: string;
-  
+
   @IsString()
   @IsNotEmpty()
   state: string;
-  
+
   @IsString()
   @IsNotEmpty()
   postalCode: string;
-  
+
   @IsString()
   @IsNotEmpty()
   country: string;
@@ -62,11 +60,11 @@ export class ShippingInfoDto {
   @Type(() => AddressDto)
   @IsNotEmpty()
   address: AddressDto;
-  
+
   @IsString()
   @IsNotEmpty()
   method: string;
-  
+
   @IsString()
   @IsOptional()
   trackingNumber?: string;
@@ -75,19 +73,19 @@ export class CustomerDto {
   @IsString()
   @IsNotEmpty()
   customerId: string;
-  
+
   @IsString()
   @IsNotEmpty()
   firstName: string;
-  
+
   @IsString()
   @IsNotEmpty()
   lastName: string;
-  
+
   @IsString()
   @IsNotEmpty()
   email: string;
-  
+
   @IsString()
   @IsNotEmpty()
   phone: string;
@@ -108,7 +106,7 @@ export class CreateOrderDto {
   @IsNotEmpty()
   storeId: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   totalAmount: number;
 
