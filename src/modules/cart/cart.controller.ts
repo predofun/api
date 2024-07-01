@@ -30,18 +30,19 @@ export class CartController {
   findAllProducts(@Param() payload: GetCartDto) {
     return this.cartService.getAllProducts(payload);
   }
-
+  
+  @Get('/find')
+  @ResponseMessage(RESPONSE_CONSTANT.CART.GET_CART_SUCCESS)
+  findOneByWalletAddress(@Query('walletAddress') walletAddress: string) {
+    return this.cartService.getCartByWalletAddress(walletAddress);
+  }
+  
   @Get(':id')
   @ResponseMessage(RESPONSE_CONSTANT.CART.GET_CART_SUCCESS)
   findOne(@Param() payload: GetCartDto) {
     return this.cartService.getCartById(payload);
   }
 
-  @Get('/find')
-  @ResponseMessage(RESPONSE_CONSTANT.CART.GET_CART_SUCCESS)
-  findOneByWalletAddress(@Query('walletAddress') walletAddress: string) {
-    return this.cartService.getCartByWalletAddress(walletAddress);
-  }
 
   @Get(':id/products')
   @ResponseMessage(RESPONSE_CONSTANT.CART.GET_ALL_CART_ITEMS_SUCCESS)

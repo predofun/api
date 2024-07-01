@@ -38,6 +38,7 @@ export class CartService {
   }
 
   async getCartByWalletAddress(walletAddress: string) {
+    console.log(walletAddress, 'stuff')
     return await this.cartModel.findOne({ walletAddress });
   }
 
