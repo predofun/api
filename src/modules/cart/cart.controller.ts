@@ -36,7 +36,7 @@ export class CartController {
   findOneByWalletAddress(@Query('walletAddress') walletAddress: string) {
     return this.cartService.getCartByWalletAddress(walletAddress);
   }
-  
+
   @Get(':id')
   @ResponseMessage(RESPONSE_CONSTANT.CART.GET_CART_SUCCESS)
   findOne(@Param() payload: GetCartDto) {
