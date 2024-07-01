@@ -17,7 +17,7 @@ export class Cart {
   @Prop(
     raw([
       {
-        product: Product,
+        product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
         size: String,
         quantity: { type: Number, default: 1 },
       },
