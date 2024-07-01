@@ -66,7 +66,7 @@ export class OrderService {
       });
 
       await this.storeModel.findByIdAndUpdate(store.id, {
-        $push: { orders: createdOrder._id },
+        $push: { orders: createdOrder._id, customers: newCustomer._id },
       });
 
       return createdOrder;
