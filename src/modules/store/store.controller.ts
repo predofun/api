@@ -32,7 +32,7 @@ export class StoreController {
   @Post()
   // @UseInterceptors(FileInterceptor('file'))
   @ResponseMessage(RESPONSE_CONSTANT.STORE.CREATE_STORE_SUCCESS)
-  @UseGuards(JwtAuthGuard)
+  @Public()
   create(
     @Body() payload: CreateStoreDto,
     // @UploadedFile() file: Express.Multer.File,
