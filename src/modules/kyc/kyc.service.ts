@@ -4,11 +4,11 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateProductDto } from './dto/product.dto';
+import { CreateProductDto } from './dto/kyc.dto';
 import { Model } from 'mongoose';
 import { uploadFiles } from 'src/common/utils/cloudinary';
 @Injectable()
-export class ProductService {
+export class KYCService {
   constructor() {}
 
   async create(
