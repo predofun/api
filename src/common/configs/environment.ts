@@ -32,6 +32,9 @@ export interface IEnvironment {
   APITOOLKIT: {
     API_KEY: string;
   };
+  CROSSMINT: {
+    API_KEY: string;
+  }
 }
 
 export const ENVIRONMENT: IEnvironment = {
@@ -66,4 +69,7 @@ export const ENVIRONMENT: IEnvironment = {
   APITOOLKIT: {
     API_KEY: process.env.APITOOLKIT_API_KEY,
   },
+  CROSSMINT: {
+    API_KEY: process.env.CROSSMINT_API_KEY
+  }
 };
