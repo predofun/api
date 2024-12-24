@@ -30,6 +30,7 @@ export class BetController {
     const { betId, username, votedOption } = voteDto;
 
     try {
+
       // 1. Find the bet
       const betsCollection = this.mongoClient.db('test').collection('bets');
       const userWalletsCollection = this.mongoClient
@@ -101,7 +102,7 @@ export class BetController {
   @Get(':betId')
   async getBetById(@Param('betId') betId: string) {
     try {
-      const betsCollection = this.mongoClient.db('predo').collection('bets');
+      const betsCollection = this.mongoClient.db('test').collection('bets');
       const bet = await betsCollection.findOne({ betId });
       if (!bet) {
         throw new HttpException('Bet not found', HttpStatus.NOT_FOUND);
