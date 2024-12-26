@@ -30,7 +30,6 @@ export class BetController {
     const { betId, username, votedOption } = voteDto;
 
     try {
-
       // 1. Find the bet
       const betsCollection = this.mongoClient.db('test').collection('bets');
       const userWalletsCollection = this.mongoClient
@@ -53,12 +52,15 @@ export class BetController {
 
       // 3. Find user's wallet
       const userWallet = await userWalletsCollection.findOne({ username });
+      const balance = await this.betService.getWalletBalance(
+        userWallet.walletLocator,
+      );
       if (!userWallet) {
         throw new HttpException('User wallet not found', HttpStatus.NOT_FOUND);
       }
 
       // 4. Check wallet balance
-      if (userWallet.balance < bet.minAmount) {
+      if (balance < bet.minAmount) {
         throw new HttpException(
           'Insufficient balance to place bet',
           HttpStatus.BAD_REQUEST,

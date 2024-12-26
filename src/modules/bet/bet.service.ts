@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { MongoClient } from 'mongodb';
 import { CreateBetDto } from './dto/create-bet.dto';
 import { UpdateBetDto } from './dto/update-bet.dto';
+import { LAMPORTS_PER_SOL, Connection, PublicKey } from '@solana/web3.js';
+
+const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+const SOL_TO_USDC = 181 / LAMPORTS_PER_SOL;
 
 @Injectable()
 export class BetService {
-  constructor(
-  ) {}
+  constructor() {}
 
   create(createBetDto: CreateBetDto) {
     return 'This action adds a new bet';
@@ -31,8 +34,13 @@ export class BetService {
   async voteBet(betId: string, username: string, votedOption: string) {
     // const betsCollection = this.mongoClient.db('predo').collection('bets');
     // const userWalletsCollection = this.mongoClient.db('predo').collection('userwallets');
-
     // Perform validations and update bet
     // Similar logic to what's in the controller
+  }
+  async getWalletBalance(walletLocator: string) {
+    const balance = await connection.getBalance(new PublicKey(walletLocator));
+    if (!balance) return 0;
+    const balanceUsdc = balance * SOL_TO_USDC;
+    return balanceUsdc.toFixed(2);
   }
 }
