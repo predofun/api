@@ -74,7 +74,11 @@ export class BetController {
       }
 
       // 5. Check if option is valid
-      if (!bet.options.includes(votedOption)) {
+      if (
+        !bet.options.some(
+          (option) => option.toLowerCase() === votedOption.toLowerCase(),
+        )
+      ) {
         throw new HttpException(
           'Invalid voting option',
           HttpStatus.BAD_REQUEST,
