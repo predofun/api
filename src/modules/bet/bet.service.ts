@@ -57,7 +57,7 @@ export class BetService {
       SystemProgram.transfer({
         fromPubkey: fromKeypair.publicKey,
         toPubkey: publicKey,
-        lamports: amount * USDC_TO_SOL,
+        lamports: Math.round(amount * USDC_TO_SOL),
       }),
     );
     await sendAndConfirmTransaction(connection, transaction, [fromKeypair]);
