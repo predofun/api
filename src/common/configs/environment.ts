@@ -35,6 +35,9 @@ export interface IEnvironment {
   CROSSMINT: {
     API_KEY: string;
   }
+  AGENT: {
+    WALLET: string;
+  }
 }
 
 export const ENVIRONMENT: IEnvironment = {
@@ -71,5 +74,8 @@ export const ENVIRONMENT: IEnvironment = {
   },
   CROSSMINT: {
     API_KEY: process.env.CROSSMINT_API_KEY
+  },
+  AGENT: {
+    WALLET: process.env.AGENT_WALLET
   }
 };

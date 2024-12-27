@@ -22,9 +22,6 @@ export async function fundWallet(walletLocator: string) {
 
   return await response.json();
 }
-// Crossmint's API key
-
-// Wallet locator returned from previous step
 
 export async function getWalletBalance(walletLocator: string) {
   const response = await fetch(

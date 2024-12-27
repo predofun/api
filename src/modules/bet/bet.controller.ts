@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { BetService } from './bet.service';
 import { MongoClient } from 'mongodb';
+import { PublicKey } from '@solana/web3.js';
+import { ENVIRONMENT } from 'src/common/configs/environment';
 
 interface VoteDto {
   betId: string;
@@ -53,10 +55,12 @@ export class BetController {
       // 3. Find user's wallet
       console.log('username', username);
       const userWallet = await userWalletsCollection.findOne({ username });
-      
+      console.log(userWallet);
+
       const balance = await this.betService.getWalletBalance(
-        userWallet.walletLocator,
+        userWallet.address,
       );
+      console.log(balance);
       if (!userWallet) {
         throw new HttpException('User wallet not found', HttpStatus.NOT_FOUND);
       }
@@ -76,7 +80,11 @@ export class BetController {
           HttpStatus.BAD_REQUEST,
         );
       }
-
+      await this.betService.transfer(
+        userWallet.privateKey,
+        new PublicKey(ENVIRONMENT.AGENT.WALLET),
+        bet.minAmount,
+      );
       // 6. Update bet participants and votes
       const updatedBet = await betsCollection.findOneAndUpdate(
         { betId },
