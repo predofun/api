@@ -116,23 +116,6 @@ export class BetController {
     }
   }
 
-  @Get(':betId')
-  async getBetById(@Param('betId') betId: string) {
-    try {
-      const betsCollection = this.mongoClient.db('test').collection('bets');
-      const bet = await betsCollection.findOne({ betId });
-      if (!bet) {
-        throw new HttpException('Bet not found', HttpStatus.NOT_FOUND);
-      }
-      return bet;
-    } catch (error) {
-      throw new HttpException(
-        error.message || 'An error occurred while fetching the bet',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   @Get('user')
   async getUserWalletByUsername(@Query('username') username: string) {
     try {
@@ -147,6 +130,23 @@ export class BetController {
     } catch (error) {
       throw new HttpException(
         error.message || 'An error occurred while fetching the user wallet',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get(':betId')
+  async getBetById(@Param('betId') betId: string) {
+    try {
+      const betsCollection = this.mongoClient.db('test').collection('bets');
+      const bet = await betsCollection.findOne({ betId });
+      if (!bet) {
+        throw new HttpException('Bet not found', HttpStatus.NOT_FOUND);
+      }
+      return bet;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'An error occurred while fetching the bet',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
