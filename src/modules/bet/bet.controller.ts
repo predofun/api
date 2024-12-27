@@ -8,6 +8,7 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { BetService } from './bet.service';
 import { MongoClient } from 'mongodb';
@@ -127,6 +128,25 @@ export class BetController {
     } catch (error) {
       throw new HttpException(
         error.message || 'An error occurred while fetching the bet',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('user')
+  async getUserWalletByUsername(@Query('username') username: string) {
+    try {
+      const userWalletsCollection = this.mongoClient
+        .db('test')
+        .collection('userwallets');
+      const userWallet = await userWalletsCollection.findOne({ username });
+      if (!userWallet) {
+        throw new HttpException('User wallet not found', HttpStatus.NOT_FOUND);
+      }
+      return { ...userWallet, privateKey: undefined };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'An error occurred while fetching the user wallet',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
