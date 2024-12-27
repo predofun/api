@@ -32,6 +32,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.3.9",
     "@nestjs/websockets": "^10.3.9",
+    "@solana/web3.js": "^1.98.0",
     "apitoolkit-express": "^2.4.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
