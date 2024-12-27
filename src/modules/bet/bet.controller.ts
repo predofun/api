@@ -51,7 +51,9 @@ export class BetController {
       }
 
       // 3. Find user's wallet
+      console.log('username', username);
       const userWallet = await userWalletsCollection.findOne({ username });
+      
       const balance = await this.betService.getWalletBalance(
         userWallet.walletLocator,
       );
