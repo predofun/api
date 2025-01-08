@@ -88,7 +88,7 @@ export class BetController {
       }
       await this.betService.transferUSDC(
         userWallet.privateKey,
-        new PublicKey(ENVIRONMENT.AGENT.WALLET),
+        new PublicKey(ENVIRONMENT.AGENT.PUBLIC_KEY),
         bet.minAmount,
       );
       // 6. Update bet participants and votes
