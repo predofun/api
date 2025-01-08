@@ -32,7 +32,7 @@ export class BetController {
   @Post('predict')
   async voteBet(@Body() voteDto: VoteDto) {
     const { betId, username, votedOption } = voteDto;
-    console.log(voteDto)
+    console.log(voteDto);
 
     try {
       // 1. Find the bet
@@ -57,12 +57,10 @@ export class BetController {
 
       // 3. Find user's wallet
       console.log('username', username);
-      const userWallet = await userWalletsCollection.findOne({ username })
+      const userWallet = await userWalletsCollection.findOne({ username });
       console.log(userWallet);
-      const solana = new solanaService(
-        ENVIRONMENT.HELIUS.RPC_URL,
-        ENVIRONMENT.FEE_PAYER,
-      );
+      const solana = new solanaService();
+      console.log(solana)
       const balance = await solana.getUSDCBalance(userWallet.address);
       console.log('balance', balance, 'USDC');
       if (!userWallet) {
@@ -176,7 +174,7 @@ export class BetController {
       }
       return bet;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new HttpException(
         error.message || 'An error occurred while fetching the bet',
         HttpStatus.INTERNAL_SERVER_ERROR,

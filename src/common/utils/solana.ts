@@ -135,6 +135,7 @@ export class solanaService {
         this.usdcMint,
         walletAddress,
       );
+      console.log(tokenAccount)
 
       const balance =
         await this.connection.getTokenAccountBalance(tokenAccount);
