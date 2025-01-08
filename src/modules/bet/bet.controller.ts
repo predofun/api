@@ -37,7 +37,6 @@ export class BetController {
     try {
       // 1. Find the bet
       const betsCollection = this.mongoClient.db('test').collection('bets');
-      console.log(betsCollection)
       const userWalletsCollection = this.mongoClient
         .db('test')
         .collection('userwallets');
@@ -58,14 +57,14 @@ export class BetController {
 
       // 3. Find user's wallet
       console.log('username', username);
-      const userWallet = await userWalletsCollection.findOne({ username });
+      const userWallet = await userWalletsCollection.findOne({ username })
       console.log(userWallet);
       const solana = new solanaService(
         ENVIRONMENT.HELIUS.RPC_URL,
         ENVIRONMENT.FEE_PAYER,
       );
       const balance = await solana.getUSDCBalance(userWallet.address);
-      console.log(balance);
+      console.log('balance', balance, 'USDC');
       if (!userWallet) {
         throw new HttpException('User wallet not found', HttpStatus.NOT_FOUND);
       }

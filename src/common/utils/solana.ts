@@ -138,6 +138,7 @@ export class solanaService {
 
       const balance =
         await this.connection.getTokenAccountBalance(tokenAccount);
+      console.log('solana.ts balance', balance)
       return parseFloat(balance.value.amount) / 1_000_000; // Convert to USDC
     } catch (error) {
       throw new Error(`Error checking balance: ${error.message}`);
