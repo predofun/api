@@ -1,18 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { MongoClient } from 'mongodb';
-import { CreateBetDto } from './dto/create-bet.dto';
-import { UpdateBetDto } from './dto/update-bet.dto';
 import {
-  LAMPORTS_PER_SOL,
-  Connection,
   PublicKey,
-  Keypair,
-  Transaction,
-  SystemProgram,
-  sendAndConfirmTransaction,
 } from '@solana/web3.js';
 import bs58 from 'bs58'
-import { SolanaAgentKit, createSolanaTools } from 'solana-agent-kit';
 
 import { ENVIRONMENT } from 'src/common/configs/environment';
 
