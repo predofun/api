@@ -177,6 +177,7 @@ export class BetController {
       }
       return bet;
     } catch (error) {
+      console.log(error)
       throw new HttpException(
         error.message || 'An error occurred while fetching the bet',
         HttpStatus.INTERNAL_SERVER_ERROR,
