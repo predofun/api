@@ -103,23 +103,30 @@ export class BetController {
       );
       console.log(result);
       // 6. Update bet participants and votes
-      const updatedBet = await betsCollection.findOneAndUpdate(
-        { betId },
-        {
-          $addToSet: {
-            participants: userWallet._id,
+      if (result.success) {
+        const updatedBet = await betsCollection.findOneAndUpdate(
+          { betId },
+          {
+            $addToSet: {
+              participants: userWallet._id,
+            },
+            $set: {
+              [`votes.${userWallet._id}`]: votedOption,
+            },
           },
-          $set: {
-            [`votes.${userWallet._id}`]: votedOption,
-          },
-        },
-        { returnDocument: 'after' },
-      );
+          { returnDocument: 'after' },
+        );
 
-      return {
-        message: 'Vote placed successfully',
-        bet: updatedBet,
-      };
+        return {
+          message: 'Vote placed successfully',
+          bet: updatedBet,
+        };
+      } else {
+        throw new HttpException(
+          'Failed to place vote',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     } catch (error) {
       throw new HttpException(
         error.message || 'An error occurred while processing the vote',

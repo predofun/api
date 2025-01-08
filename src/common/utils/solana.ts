@@ -219,7 +219,7 @@ export async function sponsorTransferUSDC(
 
     if (result.success) {
       console.log(`Transfer successful! Signature: ${result.signature}`);
-      return result.signature;
+      return result;
     } else {
       console.error(`Transfer failed: ${result.error}`);
     }
