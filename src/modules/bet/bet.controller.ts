@@ -15,6 +15,7 @@ import { PublicKey } from '@solana/web3.js';
 import { ENVIRONMENT } from 'src/common/configs/environment';
 import { readFileSync } from 'fs';
 import { encrypt } from 'src/common/utils/encryption';
+import { solanaService, sponsorTransferUSDC } from 'src/common/utils/solana';
 
 interface VoteDto {
   betId: string;
@@ -58,10 +59,8 @@ export class BetController {
       console.log('username', username);
       const userWallet = await userWalletsCollection.findOne({ username });
       console.log(userWallet);
-
-      const balance = await this.betService.getWalletBalance(
-        userWallet.address,
-      );
+      const solana = new solanaService();
+      const balance = await solana.getUSDCBalance(userWallet.address);
       console.log(balance);
       if (!userWallet) {
         throw new HttpException('User wallet not found', HttpStatus.NOT_FOUND);
@@ -86,7 +85,8 @@ export class BetController {
           HttpStatus.BAD_REQUEST,
         );
       }
-      await this.betService.transferUSDC(
+
+      await sponsorTransferUSDC(
         userWallet.privateKey,
         new PublicKey(ENVIRONMENT.AGENT.PUBLIC_KEY),
         bet.minAmount,

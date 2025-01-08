@@ -45,7 +45,8 @@ export interface IEnvironment {
   };
   ENCRYPTION: {
     KEY: string;
-  }
+  };
+  FEE_PAYER: string;
 }
 
 export const ENVIRONMENT: IEnvironment = {
@@ -90,9 +91,11 @@ export const ENVIRONMENT: IEnvironment = {
   MODE: process.env.MODE,
   ENCRYPTION: {
     KEY: process.env.ENCRYPTION_KEY,
-  },  HELIUS: {
+  },
+  HELIUS: {
     RPC_URL:
       `https://${process.env.MODE === 'dev' ? 'devnet' : 'mainnet'}.helius-rpc.com/?api-key=${process.env.HELIUS_RPC_URL}` ||
       '',
   },
+  FEE_PAYER: process.env.FEE_PAYER,
 };

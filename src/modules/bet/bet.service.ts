@@ -40,47 +40,47 @@ export class BetService {
     // Then convert Buffer to base58
     return bs58.encode(buffer);
   }
-  async getWalletBalance(walletLocator: string) {
-    try {
-      const agentWallet = this.base64ToBS58(
-        Buffer.from(ENVIRONMENT.AGENT.WALLET, 'base64'),
-      );
-      console.log(agentWallet);
+  // async getWalletBalance(walletLocator: string) {
+  //   try {
+  //     const agentWallet = this.base64ToBS58(
+  //       Buffer.from(ENVIRONMENT.AGENT.WALLET, 'base64'),
+  //     );
+  //     console.log(agentWallet);
 
-      const agent = await this.setupAgent(agentWallet);
-      const usdcTokenBalance = await agent.getBalanceOther(
-        new PublicKey(walletLocator),
-        this.USDC_MINT_ADDRESS,
-      );
-      if (usdcTokenBalance === null) return 0;
-      return usdcTokenBalance;
-    } catch (error) {
-      console.error('Error from getting wallet balance', error);
-    }
-  }
+  //     const agent = await this.setupAgent(agentWallet);
+  //     const usdcTokenBalance = await agent.getBalanceOther(
+  //       new PublicKey(walletLocator),
+  //       this.USDC_MINT_ADDRESS,
+  //     );
+  //     if (usdcTokenBalance === null) return 0;
+  //     return usdcTokenBalance;
+  //   } catch (error) {
+  //     console.error('Error from getting wallet balance', error);
+  //   }
+  // }
 
-  async setupAgent(privateKey: string) {
-    const agent = new SolanaAgentKit(privateKey, ENVIRONMENT.HELIUS.RPC_URL, {
-      OPENAI_API_KEY: 'your-api-key',
-    });
-    return agent;
-  }
+  // async setupAgent(privateKey: string) {
+  //   const agent = new SolanaAgentKit(privateKey, ENVIRONMENT.HELIUS.RPC_URL, {
+  //     OPENAI_API_KEY: 'your-api-key',
+  //   });
+  //   return agent;
+  // }
 
-  async transferUSDC(from: string, to: PublicKey, amount: number) {
-    // Transfer SPL token
-    try {
-      const fromWallet = this.base64ToBS58(Buffer.from(from, 'base64'));
-      console.log(fromWallet);
+  // async transferUSDC(from: string, to: PublicKey, amount: number) {
+  //   // Transfer SPL token
+  //   try {
+  //     const fromWallet = this.base64ToBS58(Buffer.from(from, 'base64'));
+  //     console.log(fromWallet);
 
-      const agent = await this.setupAgent(fromWallet);
-      const signature = await agent.transfer(
-        to,
-        amount,
-        this.USDC_MINT_ADDRESS,
-      );
-      return signature;
-    } catch (error) {
-      console.error('Error from transferring USDC', error);
-    }
-  }
+  //     const agent = await this.setupAgent(fromWallet);
+  //     const signature = await agent.transfer(
+  //       to,
+  //       amount,
+  //       this.USDC_MINT_ADDRESS,
+  //     );
+  //     return signature;
+  //   } catch (error) {
+  //     console.error('Error from transferring USDC', error);
+  //   }
+  // }
 }
