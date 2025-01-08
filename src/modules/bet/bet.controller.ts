@@ -59,6 +59,16 @@ export class BetController {
       console.log('username', username);
       const userWallet = await userWalletsCollection.findOne({ username });
       console.log(userWallet);
+      // 3.5. Check if user has already bet
+      const hasBet =
+        bet.votes[userWallet._id as unknown as string] !== undefined;
+      if (hasBet) {
+        throw new HttpException(
+          'User has already made a bet on this bet',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const solana = new solanaService();
       const balance = await solana.getUSDCBalance(userWallet.address);
       console.log('balance', balance, 'USDC');
@@ -91,7 +101,7 @@ export class BetController {
         new PublicKey(ENVIRONMENT.AGENT.PUBLIC_KEY),
         bet.minAmount,
       );
-      console.log(result)
+      console.log(result);
       // 6. Update bet participants and votes
       const updatedBet = await betsCollection.findOneAndUpdate(
         { betId },
