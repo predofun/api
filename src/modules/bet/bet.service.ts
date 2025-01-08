@@ -11,55 +11,76 @@ import {
   SystemProgram,
   sendAndConfirmTransaction,
 } from '@solana/web3.js';
+import bs58 from 'bs58'
+import { SolanaAgentKit, createSolanaTools } from 'solana-agent-kit';
 
-const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
-const SOL_TO_USDC = 181 / LAMPORTS_PER_SOL;
-const USDC_TO_SOL = (1 / 181) * LAMPORTS_PER_SOL;
+import { ENVIRONMENT } from 'src/common/configs/environment';
+
 
 @Injectable()
 export class BetService {
-  constructor() {}
-
-  create(createBetDto: CreateBetDto) {
-    return 'This action adds a new bet';
+  USDC_MINT_ADDRESS_DEVNET: PublicKey;
+  USDC_MINT_ADDRESS_MAINNET: PublicKey;
+  USDC_MINT_ADDRESS: PublicKey;
+  constructor() {
+    this.USDC_MINT_ADDRESS_DEVNET = new PublicKey(
+      '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
+    );
+    this.USDC_MINT_ADDRESS_MAINNET = new PublicKey(
+      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    );
+    this.USDC_MINT_ADDRESS =
+      ENVIRONMENT.MODE === 'dev'
+        ? this.USDC_MINT_ADDRESS_DEVNET
+        : this.USDC_MINT_ADDRESS_MAINNET;
   }
-
-  findAll() {
-    return `This action returns all bet`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} bet`;
-  }
-
-  update(id: number, updateBetDto: UpdateBetDto) {
-    return `This action updates a #${id} bet`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} bet`;
+  base64ToBS58(base64String) {
+    // First convert base64 to Buffer
+    const buffer = Buffer.from(base64String, 'base64');
+    // Then convert Buffer to base58
+    return bs58.encode(buffer);
   }
   async getWalletBalance(walletLocator: string) {
-    console.log(walletLocator);
-    const balance = await connection.getBalance(new PublicKey(walletLocator));
-    console.log(balance);
-    if (!balance) return 0;
-    const balanceUsdc = balance * SOL_TO_USDC;
-    console.log(balanceUsdc);
-    return balanceUsdc.toFixed(2);
+    try {
+      const agentWallet = this.base64ToBS58(
+        Buffer.from(ENVIRONMENT.AGENT.WALLET, 'base64'),
+      );
+      console.log(agentWallet);
+
+      const agent = await this.setupAgent(agentWallet);
+      const usdcTokenBalance = await agent.getBalanceOther(
+        new PublicKey(walletLocator),
+        this.USDC_MINT_ADDRESS,
+      );
+      if (usdcTokenBalance === null) return 0;
+      return usdcTokenBalance;
+    } catch (error) {
+      console.error('Error from getting wallet balance', error);
+    }
   }
-  async transfer(privateKeyFrom: string, publicKey: PublicKey, amount: number) {
-    const fromKeypair = Keypair.fromSecretKey(
-      Buffer.from(privateKeyFrom, 'base64'),
-    );
-    console.log(amount / SOL_TO_USDC);
-    const transaction = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: fromKeypair.publicKey,
-        toPubkey: publicKey,
-        lamports: Math.round(amount * USDC_TO_SOL),
-      }),
-    );
-    await sendAndConfirmTransaction(connection, transaction, [fromKeypair]);
+
+  async setupAgent(privateKey: string) {
+    const agent = new SolanaAgentKit(privateKey, ENVIRONMENT.HELIUS.RPC_URL, {
+      OPENAI_API_KEY: 'your-api-key',
+    });
+    return agent;
+  }
+
+  async transferUSDC(from: string, to: PublicKey, amount: number) {
+    // Transfer SPL token
+    try {
+      const fromWallet = this.base64ToBS58(Buffer.from(from, 'base64'));
+      console.log(fromWallet);
+
+      const agent = await this.setupAgent(fromWallet);
+      const signature = await agent.transfer(
+        to,
+        amount,
+        this.USDC_MINT_ADDRESS,
+      );
+      return signature;
+    } catch (error) {
+      console.error('Error from transferring USDC', error);
+    }
   }
 }

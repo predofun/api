@@ -34,10 +34,15 @@ export interface IEnvironment {
   };
   CROSSMINT: {
     API_KEY: string;
-  }
+  };
   AGENT: {
     WALLET: string;
-  }
+    PUBLIC_KEY: string;
+  };
+  MODE: string;
+  HELIUS: {
+    RPC_URL: string;
+  };
 }
 
 export const ENVIRONMENT: IEnvironment = {
@@ -73,9 +78,16 @@ export const ENVIRONMENT: IEnvironment = {
     API_KEY: process.env.APITOOLKIT_API_KEY,
   },
   CROSSMINT: {
-    API_KEY: process.env.CROSSMINT_API_KEY
+    API_KEY: process.env.CROSSMINT_API_KEY,
   },
   AGENT: {
-    WALLET: process.env.AGENT_WALLET
-  }
+    PUBLIC_KEY: process.env.AGENT_PUBLIC_KEY,
+    WALLET: process.env.AGENT_WALLET,
+  },
+  MODE: process.env.MODE,
+  HELIUS: {
+    RPC_URL:
+      `https://${process.env.MODE === 'dev' ? 'devnet' : 'mainnet'}.helius-rpc.com/?api-key=${process.env.HELIUS_RPC_URL}` ||
+      '',
+  },
 };

@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  
   Param,
   Delete,
   HttpException,
@@ -14,6 +14,7 @@ import { BetService } from './bet.service';
 import { MongoClient } from 'mongodb';
 import { PublicKey } from '@solana/web3.js';
 import { ENVIRONMENT } from 'src/common/configs/environment';
+import { readFileSync } from 'fs';
 
 interface VoteDto {
   betId: string;
@@ -85,7 +86,7 @@ export class BetController {
           HttpStatus.BAD_REQUEST,
         );
       }
-      await this.betService.transfer(
+      await this.betService.transferUSDC(
         userWallet.privateKey,
         new PublicKey(ENVIRONMENT.AGENT.WALLET),
         bet.minAmount,
@@ -135,6 +136,32 @@ export class BetController {
     }
   }
 
+  @Get('fix')
+  async fixMistake() {
+    try {
+      const userWalletsCollection = this.mongoClient
+        .db('test')
+        .collection('userwallets');
+      const jsonData = JSON.parse(
+        readFileSync(
+          `C:\\Users\\USER\\Documents\\Code\\ICP\\oneid-api\\src\\modules\\bet\\test.userwallets.json`,
+          'utf-8',
+        ),
+      );
+      // return jsonData;
+      await Promise.all(
+        jsonData.map(async (userWallet: any) => {
+          await userWalletsCollection.updateOne(
+            { username: userWallet.username },
+            { $set: { privateKey: userWallet.privateKey } },
+          );
+          console.log(`${userWallet.username} private key has been restored`);
+        }),
+      ).then(() => console.log('User wallets have been fixed'));
+    } catch (error) {
+      console.log(error);
+    }
+  }
   @Get(':betId')
   async getBetById(@Param('betId') betId: string) {
     try {
