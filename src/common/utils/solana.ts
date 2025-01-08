@@ -4,6 +4,7 @@ import {
   Transaction,
   SystemProgram,
   Keypair,
+  sendAndConfirmTransaction,
 } from '@solana/web3.js';
 import {
   TOKEN_PROGRAM_ID,
@@ -20,7 +21,9 @@ const USDC_MINT_ADDRESS_MAINNET = new PublicKey(
   'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
 );
 const USDC_MINT_ADDRESS =
-  ENVIRONMENT.MODE === 'dev' ? USDC_MINT_ADDRESS_DEVNET : USDC_MINT_ADDRESS_MAINNET;
+  ENVIRONMENT.MODE === 'dev'
+    ? USDC_MINT_ADDRESS_DEVNET
+    : USDC_MINT_ADDRESS_MAINNET;
 export class solanaService {
   connection: Connection;
   feePayer: Keypair;
@@ -29,7 +32,7 @@ export class solanaService {
     endpoint = ENVIRONMENT.HELIUS.RPC_URL,
     feePayerPrivateKey = ENVIRONMENT.FEE_PAYER, // Uint8Array of private key
   ) {
-    this.connection = new Connection(endpoint, 'finalized');
+    this.connection = new Connection(endpoint, 'confirmed');
     this.feePayer = Keypair.fromSecretKey(bs58.decode(feePayerPrivateKey));
     this.usdcMint = USDC_MINT_ADDRESS; // Mainnet USDC
   }
@@ -55,11 +58,12 @@ export class solanaService {
           ),
         );
 
-        const signature = await this.connection.sendTransaction(transaction, [
-          this.feePayer,
-        ]);
-
-        await this.connection.confirmTransaction(signature);
+        const signature = await sendAndConfirmTransaction(
+          this.connection,
+          transaction,
+          [this.feePayer],
+        );
+        console.log('Creating Account', signature);
       }
 
       return associatedTokenAddress;
@@ -104,16 +108,12 @@ export class solanaService {
       const { blockhash } = await this.connection.getLatestBlockhash();
       transaction.recentBlockhash = blockhash;
 
-      // Sign transaction
-      transaction.sign(this.feePayer, senderKeypair);
-
       // Send transaction
-      const signature = await this.connection.sendRawTransaction(
-        transaction.serialize(),
+      const signature = await sendAndConfirmTransaction(
+        this.connection,
+        transaction,
+        [this.feePayer, senderKeypair],
       );
-
-      // Confirm transaction
-      await this.connection.confirmTransaction(signature);
 
       return {
         success: true,
@@ -130,7 +130,6 @@ export class solanaService {
 
   // Utility method to check USDC balance
   async getUSDCBalance(walletAddress) {
-
     try {
       const address = new PublicKey(walletAddress);
       const tokenAccount = await getAssociatedTokenAddress(
@@ -140,7 +139,7 @@ export class solanaService {
 
       const balance =
         await this.connection.getTokenAccountBalance(tokenAccount);
-      console.log('solana.ts balance', balance)
+      console.log('solana.ts balance', balance);
       return parseFloat(balance.value.amount) / 1_000_000; // Convert to USDC
     } catch (error) {
       throw new Error(`Error checking balance: ${error.message}`);

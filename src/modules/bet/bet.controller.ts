@@ -86,11 +86,12 @@ export class BetController {
         );
       }
 
-      await sponsorTransferUSDC(
+      const result = await sponsorTransferUSDC(
         userWallet.privateKey,
         new PublicKey(ENVIRONMENT.AGENT.PUBLIC_KEY),
         bet.minAmount,
       );
+      console.log(result)
       // 6. Update bet participants and votes
       const updatedBet = await betsCollection.findOneAndUpdate(
         { betId },
