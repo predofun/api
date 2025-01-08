@@ -148,17 +148,18 @@ export class solanaService {
       // Confirm transaction
       try {
         await this.confirmTransaction(this.connection, signature);
+        return {
+          success: true,
+          signature,
+          message: `Transferred ${amount} USDC successfully`,
+        };
         // Proceed with creating the payload
       } catch (error) {
         console.error('Transaction confirmation failed:', error);
         throw 'Unable to confirm the transaction';
       }
 
-      return {
-        success: true,
-        signature,
-        message: `Transferred ${amount} USDC successfully`,
-      };
+      
     } catch (error) {
       return {
         success: false,
