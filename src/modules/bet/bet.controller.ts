@@ -32,10 +32,12 @@ export class BetController {
   @Post('predict')
   async voteBet(@Body() voteDto: VoteDto) {
     const { betId, username, votedOption } = voteDto;
+    console.log(voteDto)
 
     try {
       // 1. Find the bet
       const betsCollection = this.mongoClient.db('test').collection('bets');
+      console.log(betsCollection)
       const userWalletsCollection = this.mongoClient
         .db('test')
         .collection('userwallets');
