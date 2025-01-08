@@ -130,12 +130,13 @@ export class solanaService {
 
   // Utility method to check USDC balance
   async getUSDCBalance(walletAddress) {
+
     try {
+      const address = new PublicKey(walletAddress);
       const tokenAccount = await getAssociatedTokenAddress(
         this.usdcMint,
-        walletAddress,
+        address,
       );
-      console.log(tokenAccount)
 
       const balance =
         await this.connection.getTokenAccountBalance(tokenAccount);

@@ -60,7 +60,6 @@ export class BetController {
       const userWallet = await userWalletsCollection.findOne({ username });
       console.log(userWallet);
       const solana = new solanaService();
-      console.log(solana)
       const balance = await solana.getUSDCBalance(userWallet.address);
       console.log('balance', balance, 'USDC');
       if (!userWallet) {
