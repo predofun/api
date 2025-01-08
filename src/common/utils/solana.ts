@@ -100,13 +100,12 @@ export class solanaService {
     throw new Error('Transaction confirmation timeout');
   }
   async transferUSDC(
-    fromWallet, // PublicKey of sender
-    toWallet, // PublicKey of recipient
-    amount, // Amount in USDC (e.g., 1.5 for 1.50 USDC)
-    senderKeypair, // For signing the token transfer
+    fromWallet: PublicKey,
+    toWallet: PublicKey,
+    amount: number,
+    senderKeypair: Keypair,
   ) {
     try {
-      // Convert amount to USDC units (6 decimals)
       const tokenAmount = Math.floor(amount * 1_000_000);
 
       // Get or create associated token accounts
@@ -121,53 +120,67 @@ export class solanaService {
         toTokenAccount,
         fromWallet,
         tokenAmount,
-        [senderKeypair],
+        [], // Remove senderKeypair from here - it's not needed in instruction creation
         TOKEN_PROGRAM_ID,
       );
 
-      // Create and sign transaction
-      const transaction = new Transaction().add(transferInstruction);
+      const transaction = new Transaction();
 
-      // Set fee payer
+      // Add a compute budget instruction if needed
+      // const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
+      //   units: 300000
+      // });
+      // transaction.add(modifyComputeUnits);
+
+      transaction.add(transferInstruction);
       transaction.feePayer = this.feePayer.publicKey;
 
-      // Get recent blockhash
-      transaction.recentBlockhash = (
-        await this.connection.getLatestBlockhash()
-      ).blockhash;
+      const latestBlockhash =
+        await this.connection.getLatestBlockhash('confirmed');
+      transaction.recentBlockhash = latestBlockhash.blockhash;
+      transaction.lastValidBlockHeight = latestBlockhash.lastValidBlockHeight;
 
-      // Send transaction
-      // Sign transaction
-      transaction.sign(this.feePayer, senderKeypair);
+      // Proper signing order
+      transaction.sign(senderKeypair, this.feePayer);
 
-      // Send transaction
+      const rawTransaction = transaction.serialize();
+
       const signature = await this.connection.sendRawTransaction(
-        transaction.serialize(),
+        rawTransaction,
+        {
+          skipPreflight: false,
+          preflightCommitment: 'confirmed',
+          maxRetries: 5,
+        },
       );
 
-      // Confirm transaction
-      try {
-        await this.confirmTransaction(this.connection, signature);
-        return {
-          success: true,
-          signature,
-          message: `Transferred ${amount} USDC successfully`,
-        };
-        // Proceed with creating the payload
-      } catch (error) {
-        console.error('Transaction confirmation failed:', error);
-        throw 'Unable to confirm the transaction';
+      // Wait for confirmation with more detailed error handling
+      const confirmation = await this.connection.confirmTransaction({
+        signature,
+        blockhash: latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+      });
+
+      if (confirmation.value.err) {
+        throw new Error(
+          `Transaction failed: ${JSON.stringify(confirmation.value.err)}`,
+        );
       }
 
-      
+      return {
+        success: true,
+        signature,
+        message: `Transferred ${amount} USDC successfully`,
+      };
     } catch (error) {
+      console.error('Transfer failed:', error);
       return {
         success: false,
-        error: error.message,
+        error: error.message || 'Transaction failed',
+        details: error,
       };
     }
   }
-
   // Utility method to check USDC balance
   async getUSDCBalance(walletAddress) {
     try {
