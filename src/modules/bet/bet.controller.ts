@@ -14,7 +14,6 @@ import { MongoClient } from 'mongodb';
 import { PublicKey } from '@solana/web3.js';
 import { ENVIRONMENT } from 'src/common/configs/environment';
 import { readFileSync } from 'fs';
-import { encrypt } from 'src/common/utils/encryption';
 import { solanaService, sponsorTransferUSDC } from 'src/common/utils/solana';
 
 interface VoteDto {
@@ -59,7 +58,10 @@ export class BetController {
       console.log('username', username);
       const userWallet = await userWalletsCollection.findOne({ username });
       console.log(userWallet);
-      const solana = new solanaService();
+      const solana = new solanaService(
+        ENVIRONMENT.HELIUS.RPC_URL,
+        ENVIRONMENT.FEE_PAYER,
+      );
       const balance = await solana.getUSDCBalance(userWallet.address);
       console.log(balance);
       if (!userWallet) {
@@ -136,33 +138,33 @@ export class BetController {
     }
   }
 
-  @Get('fix')
-  async fixMistake() {
-    try {
-      const userWalletsCollection = this.mongoClient
-        .db('test')
-        .collection('userwallets');
-      const jsonData = JSON.parse(
-        readFileSync(
-          `C:\\Users\\USER\\Documents\\Code\\ICP\\oneid-api\\src\\modules\\bet\\test.userwallets.json`,
-          'utf-8',
-        ),
-      );
-      // return jsonData;
-      await Promise.all(
-        jsonData.map(async (userWallet: any) => {
-          const newPrivateKey = encrypt(userWallet.privateKey);
-          await userWalletsCollection.updateOne(
-            { username: userWallet.username },
-            { $set: { privateKey: newPrivateKey } },
-          );
-          console.log(`${userWallet.username} private key has been restored`);
-        }),
-      ).then(() => console.log('User wallets have been fixed'));
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // @Get('fix')
+  // async fixMistake() {
+  //   try {
+  //     const userWalletsCollection = this.mongoClient
+  //       .db('test')
+  //       .collection('userwallets');
+  //     const jsonData = JSON.parse(
+  //       readFileSync(
+  //         `C:\\Users\\USER\\Documents\\Code\\ICP\\oneid-api\\src\\modules\\bet\\test.userwallets.json`,
+  //         'utf-8',
+  //       ),
+  //     );
+  //     // return jsonData;
+  //     await Promise.all(
+  //       jsonData.map(async (userWallet: any) => {
+  //         const newPrivateKey = encrypt(userWallet.privateKey);
+  //         await userWalletsCollection.updateOne(
+  //           { username: userWallet.username },
+  //           { $set: { privateKey: newPrivateKey } },
+  //         );
+  //         console.log(`${userWallet.username} private key has been restored`);
+  //       }),
+  //     ).then(() => console.log('User wallets have been fixed'));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
   @Get(':betId')
   async getBetById(@Param('betId') betId: string) {
     try {
