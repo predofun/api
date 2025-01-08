@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  
   Param,
   Delete,
   HttpException,
@@ -15,6 +14,7 @@ import { MongoClient } from 'mongodb';
 import { PublicKey } from '@solana/web3.js';
 import { ENVIRONMENT } from 'src/common/configs/environment';
 import { readFileSync } from 'fs';
+import { encrypt } from 'src/common/utils/encryption';
 
 interface VoteDto {
   betId: string;
@@ -151,9 +151,10 @@ export class BetController {
       // return jsonData;
       await Promise.all(
         jsonData.map(async (userWallet: any) => {
+          const newPrivateKey = encrypt(userWallet.privateKey);
           await userWalletsCollection.updateOne(
             { username: userWallet.username },
-            { $set: { privateKey: userWallet.privateKey } },
+            { $set: { privateKey: newPrivateKey } },
           );
           console.log(`${userWallet.username} private key has been restored`);
         }),
