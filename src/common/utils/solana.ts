@@ -71,7 +71,34 @@ export class solanaService {
       throw new Error(`Error creating token account: ${error.message}`);
     }
   }
+  async confirmTransaction(
+    connection: Connection,
+    signature: string,
+    maxRetries = 5,
+    retryDelay = 5000,
+  ) {
+    for (let i = 0; i < maxRetries; i++) {
+      const status = await connection.getSignatureStatus(signature);
+      console.log('Signature status:', status);
 
+      if (
+        status?.value?.confirmationStatus === 'confirmed' ||
+        status?.value?.confirmationStatus === 'finalized'
+      ) {
+        return true;
+      }
+
+      if (status?.value?.err) {
+        throw new Error(
+          `Transaction failed: ${JSON.stringify(status.value.err)}`,
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
+
+    throw new Error('Transaction confirmation timeout');
+  }
   async transferUSDC(
     fromWallet, // PublicKey of sender
     toWallet, // PublicKey of recipient
@@ -105,15 +132,27 @@ export class solanaService {
       transaction.feePayer = this.feePayer.publicKey;
 
       // Get recent blockhash
-      const { blockhash } = await this.connection.getLatestBlockhash();
-      transaction.recentBlockhash = blockhash;
+      transaction.recentBlockhash = (
+        await this.connection.getLatestBlockhash()
+      ).blockhash;
 
       // Send transaction
-      const signature = await sendAndConfirmTransaction(
-        this.connection,
-        transaction,
-        [this.feePayer, senderKeypair],
+      // Sign transaction
+      transaction.sign(this.feePayer, senderKeypair);
+
+      // Send transaction
+      const signature = await this.connection.sendRawTransaction(
+        transaction.serialize(),
       );
+
+      // Confirm transaction
+      try {
+        await this.confirmTransaction(this.connection, signature);
+        // Proceed with creating the payload
+      } catch (error) {
+        console.error('Transaction confirmation failed:', error);
+        throw 'Unable to confirm the transaction';
+      }
 
       return {
         success: true,
@@ -139,7 +178,6 @@ export class solanaService {
 
       const balance =
         await this.connection.getTokenAccountBalance(tokenAccount);
-      console.log('solana.ts balance', balance);
       return parseFloat(balance.value.amount) / 1_000_000; // Convert to USDC
     } catch (error) {
       throw new Error(`Error checking balance: ${error.message}`);
@@ -165,7 +203,9 @@ export async function sponsorTransferUSDC(
 
   try {
     // Check sender's balance first
-    const balance = await transfer.getUSDCBalance(senderKeypair.publicKey);
+    const balance = await transfer.getUSDCBalance(
+      senderKeypair.publicKey.toBase58(),
+    );
     console.log(`Current USDC balance: ${balance}`);
 
     // Perform transfer
