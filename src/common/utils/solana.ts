@@ -82,7 +82,34 @@ export class SolanaService {
       );
     }
   }
+  async confirmTransaction(
+    connection: Connection,
+    signature: string,
+    maxRetries = 5,
+    retryDelay = 5000,
+  ) {
+    for (let i = 0; i < maxRetries; i++) {
+      const status = await connection.getSignatureStatus(signature);
+      console.log('Signature status:', status);
 
+      if (
+        status?.value?.confirmationStatus === 'confirmed' ||
+        status?.value?.confirmationStatus === 'finalized'
+      ) {
+        return true;
+      }
+
+      if (status?.value?.err) {
+        throw new Error(
+          `Transaction failed: ${JSON.stringify(status.value.err)}`,
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
+
+    throw new Error('Transaction confirmation timeout');
+  }
   async transferUSDC(
     fromWallet: PublicKey,
     toWallet: PublicKey,
@@ -126,7 +153,7 @@ export class SolanaService {
           preflightCommitment: 'processed',
         },
       );
-
+      await this.confirmTransaction(this.connection, signature);
       return {
         success: true,
         signature,
