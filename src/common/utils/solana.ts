@@ -135,9 +135,14 @@ export class SolanaService {
       );
 
       const transaction = new Transaction().add(
-        ComputeBudgetProgram.setComputeUnitLimit({ units: 300_000 }),
+        ComputeBudgetProgram.setComputeUnitLimit({ units: 3_000_000 }),
         transferInstruction,
       );
+      const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: 500000,
+      });
+
+      transaction.add(addPriorityFee);
 
       transaction.feePayer = this.feePayer.publicKey;
 
