@@ -139,7 +139,7 @@ export class SolanaService {
         transferInstruction,
       );
       const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
-        microLamports: 500000,
+        microLamports: 50000,
       });
 
       transaction.add(addPriorityFee);
