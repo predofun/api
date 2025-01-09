@@ -14,7 +14,7 @@ import { MongoClient } from 'mongodb';
 import { PublicKey } from '@solana/web3.js';
 import { ENVIRONMENT } from 'src/common/configs/environment';
 import { readFileSync } from 'fs';
-import { solanaService, sponsorTransferUSDC } from 'src/common/utils/solana';
+import { SolanaService, sponsorTransferUSDC } from 'src/common/utils/solana';
 
 interface VoteDto {
   betId: string;
@@ -58,7 +58,7 @@ export class BetController {
       // 3. Find user's wallet
       console.log('username', username);
       const userWallet = await userWalletsCollection.findOne({ username });
-      console.log(userWallet);
+      console.log({...userWallet, privateKey: undefined});
       // 3.5. Check if user has already bet
       const hasBet =
         bet.votes[userWallet._id as unknown as string] !== undefined;
@@ -69,7 +69,7 @@ export class BetController {
         );
       }
 
-      const solana = new solanaService();
+      const solana = new SolanaService();
       const balance = await solana.getUSDCBalance(userWallet.address);
       console.log('balance', balance, 'USDC');
       if (!userWallet) {
