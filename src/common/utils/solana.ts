@@ -71,6 +71,8 @@ export class SolanaService {
           {
             skipPreflight: true,
             preflightCommitment: 'processed',
+            commitment: 'confirmed',
+            maxRetries: 10,
           },
         );
         console.log('Created associated token account:', signature);
@@ -151,6 +153,8 @@ export class SolanaService {
         {
           skipPreflight: false,
           preflightCommitment: 'processed',
+          commitment: 'confirmed',
+          maxRetries: 10,
         },
       );
       await this.confirmTransaction(this.connection, signature);
