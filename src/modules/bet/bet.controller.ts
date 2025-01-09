@@ -38,8 +38,7 @@ export class BetController {
     // Initialize BullMQ queue
     this.transferQueue = new Queue('transferQueue', {
       connection: {
-        host: ENVIRONMENT.REDIS.HOST,
-        port: ENVIRONMENT.REDIS.PORT,
+        url: ENVIRONMENT.REDIS.URL,
       },
     });
 
@@ -77,8 +76,7 @@ export class BetController {
       },
       {
         connection: {
-          host: ENVIRONMENT.REDIS.HOST,
-          port: ENVIRONMENT.REDIS.PORT,
+          url: ENVIRONMENT.REDIS.URL,
         },
       },
     );

@@ -50,6 +50,7 @@ export interface IEnvironment {
   REDIS: {
     HOST: string;
     PORT: number;
+    URL: string;
   }
 }
 
@@ -105,6 +106,7 @@ export const ENVIRONMENT: IEnvironment = {
   REDIS: {
     HOST: process.env.REDIS_HOST,
     PORT: Number(process.env.REDIS_PORT),
+    URL: process.env.REDIS_URL
   },
   FEE_PAYER: process.env.FEE_PAYER,
 };
