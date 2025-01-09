@@ -171,7 +171,7 @@ export class SolanaService {
         const finalSignature = txSignature;
 
         if (finalSignature) {
-          await this.confirmTransaction(this.connection, signature);
+          await this.confirmTransaction(this.connection, finalSignature);
           return {
             success: false,
             signature: finalSignature,
