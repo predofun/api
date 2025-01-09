@@ -147,25 +147,49 @@ export class SolanaService {
       transaction.sign(senderKeypair, this.feePayer);
 
       const rawTransaction = transaction.serialize();
+      let signature;
+      try {
+        signature = await sendAndConfirmRawTransaction(
+          this.connection,
+          rawTransaction,
+          {
+            skipPreflight: false,
+            preflightCommitment: 'confirmed',
+            commitment: 'confirmed',
+            maxRetries: 10,
+          },
+        );
+      } catch (error) {
+        console.log('In catch mode now');
+        // The signature is available directly in the error object
+        const txSignature = error.signature;
 
-      const signature = await sendAndConfirmRawTransaction(
-        this.connection,
-        rawTransaction,
-        {
-          skipPreflight: false,
-          preflightCommitment: 'processed',
-          commitment: 'confirmed',
-          maxRetries: 10,
-        },
-      );
-      await this.confirmTransaction(this.connection, signature);
+        // Or we could parse it from the error message if needed
+        const messageMatch = error.message.match(/Check signature (\w+)/);
+        const messageSignature = messageMatch ? messageMatch[1] : null;
+
+        // Use the signature from error object (more reliable) or message
+        const finalSignature = txSignature || messageSignature;
+
+        if (finalSignature) {
+          await this.confirmTransaction(this.connection, signature);
+          return {
+            success: false,
+            signature: finalSignature,
+            message:
+              'Transaction sent but confirmation timed out. Please check signature on Solana Explorer.',
+          };
+        }
+
+        throw error; // Re-throw if we couldn't get the signature
+      }
       return {
         success: true,
         signature,
         message: `Successfully transferred ${amount} USDC.`,
       };
     } catch (error) {
-      console.log(error)
+      console.log(error);
       console.error('Transfer failed:', error.message);
       return { success: false, error: error.message };
     }
