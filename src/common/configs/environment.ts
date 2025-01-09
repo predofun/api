@@ -47,6 +47,10 @@ export interface IEnvironment {
     KEY: string;
   };
   FEE_PAYER: string;
+  REDIS: {
+    HOST: string;
+    PORT: number;
+  }
 }
 
 export const ENVIRONMENT: IEnvironment = {
@@ -97,6 +101,10 @@ export const ENVIRONMENT: IEnvironment = {
       process.env.MODE === 'dev'
         ? `https://devnet.helius-rpc.com/?api-key=${process.env.HELIUS_RPC_URL}`
         : `http://basic.rpc.solanavibestation.com/?api_key=${process.env.PAID_RPC}`,
+  },
+  REDIS: {
+    HOST: process.env.REDIS_HOST,
+    PORT: Number(process.env.REDIS_PORT),
   },
   FEE_PAYER: process.env.FEE_PAYER,
 };

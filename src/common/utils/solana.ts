@@ -134,10 +134,7 @@ export class SolanaService {
         tokenAmount,
       );
 
-      const transaction = new Transaction().add(
-        ComputeBudgetProgram.setComputeUnitLimit({ units: 3_000_000 }),
-        transferInstruction,
-      );
+      const transaction = new Transaction().add(transferInstruction);
       const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
         microLamports: 500000,
       });
