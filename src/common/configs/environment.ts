@@ -94,8 +94,9 @@ export const ENVIRONMENT: IEnvironment = {
   },
   HELIUS: {
     RPC_URL:
-      `https://${process.env.MODE === 'dev' ? 'devnet' : 'mainnet'}.helius-rpc.com/?api-key=${process.env.HELIUS_RPC_URL}` ||
-      '',
+      process.env.MODE === 'dev'
+        ? `https://devnet.helius-rpc.com/?api-key=${process.env.HELIUS_RPC_URL}`
+        : `http://basic.rpc.solanavibestation.com/?api_key=${process.env.PAID_RPC}`,
   },
   FEE_PAYER: process.env.FEE_PAYER,
 };
