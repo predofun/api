@@ -6,6 +6,7 @@ import {
   Keypair,
   ComputeBudgetProgram,
   sendAndConfirmRawTransaction,
+  sendAndConfirmTransaction,
 } from '@solana/web3.js';
 import {
   TOKEN_PROGRAM_ID,
@@ -164,6 +165,7 @@ export class SolanaService {
         message: `Successfully transferred ${amount} USDC.`,
       };
     } catch (error) {
+      console.log(error)
       console.error('Transfer failed:', error.message);
       return { success: false, error: error.message };
     }
