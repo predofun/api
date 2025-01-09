@@ -7,6 +7,7 @@ import {
   ComputeBudgetProgram,
   sendAndConfirmRawTransaction,
   sendAndConfirmTransaction,
+  TransactionExpiredTimeoutError,
 } from '@solana/web3.js';
 import {
   TOKEN_PROGRAM_ID,
@@ -163,13 +164,11 @@ export class SolanaService {
         console.log('In catch mode now');
         // The signature is available directly in the error object
         const txSignature = error.signature;
-
+        console.log('txSignature', txSignature);
         // Or we could parse it from the error message if needed
-        const messageMatch = error.message.match(/Check signature (\w+)/);
-        const messageSignature = messageMatch ? messageMatch[1] : null;
 
         // Use the signature from error object (more reliable) or message
-        const finalSignature = txSignature || messageSignature;
+        const finalSignature = txSignature;
 
         if (finalSignature) {
           await this.confirmTransaction(this.connection, signature);
