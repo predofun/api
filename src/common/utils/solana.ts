@@ -233,14 +233,14 @@ export async function sponsorTransferUSDC(
   try {
     senderKeypair = Keypair.fromSecretKey(bs58.decode(senderPrivateKey));
   } catch (error) {
-   try {
-     console.log('Key is Base64');
-     senderKeypair = Keypair.fromSecretKey(
-       bs58.decode(base64ToBS58(senderPrivateKey)),
-     );
-   } catch (error) {
-    console.log('Private Key is corrupt')
-   }
+    try {
+      console.log('Key is Base64');
+      senderKeypair = Keypair.fromSecretKey(
+        bs58.decode(base64ToBS58(senderPrivateKey)),
+      );
+    } catch (error) {
+      console.log('Private Key is corrupt');
+    }
   }
   try {
     const balance = await transfer.getUSDCBalance(
@@ -263,8 +263,10 @@ export async function sponsorTransferUSDC(
       console.log(`Transfer successful! Signature: ${result.signature}`);
       return result;
     } else {
-      console.error(`Transfer failed: ${result.error}`);
+      console.log(`Transfer failed: ${result.error}`);
+      return result;
     }
+    return result;
   } catch (error) {
     console.error(`Error: ${error.message}`);
   }
