@@ -48,9 +48,6 @@ export class BetController {
           new PublicKey(recipient),
           amount,
         );
-        if (!result) {
-          throw new Error('Transfer failed');
-        }
         if (result && result.success) {
           // Update database after successful transfer
           const betsCollection = this.mongoClient.db('test').collection('bets');
