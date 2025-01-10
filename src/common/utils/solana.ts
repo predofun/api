@@ -212,6 +212,12 @@ export class SolanaService {
     }
   }
 }
+export function base64ToBS58(base64String) {
+  // First convert base64 to Buffer
+  const buffer = Buffer.from(base64String, 'base64');
+  // Then convert Buffer to base58
+  return bs58.encode(buffer);
+}
 
 export async function sponsorTransferUSDC(
   senderPrivateKey: string,
@@ -223,9 +229,19 @@ export async function sponsorTransferUSDC(
     ENVIRONMENT.HELIUS.RPC_URL,
     feePayerPrivateKey,
   );
-
-  const senderKeypair = Keypair.fromSecretKey(bs58.decode(senderPrivateKey));
-
+  let senderKeypair;
+  try {
+    senderKeypair = Keypair.fromSecretKey(bs58.decode(senderPrivateKey));
+  } catch (error) {
+   try {
+     console.log('Key is Base64');
+     senderKeypair = Keypair.fromSecretKey(
+       bs58.decode(base64ToBS58(senderPrivateKey)),
+     );
+   } catch (error) {
+    console.log('Private Key is corrupt')
+   }
+  }
   try {
     const balance = await transfer.getUSDCBalance(
       senderKeypair.publicKey.toBase58(),
