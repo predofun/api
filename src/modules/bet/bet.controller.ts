@@ -21,12 +21,6 @@ interface VoteDto {
   votedOption: string;
 }
 
-interface VoteDto {
-  betId: string;
-  username: string;
-  votedOption: string;
-}
-
 @Controller('bet')
 export class BetController {
   private transferQueue: Queue;
@@ -54,8 +48,10 @@ export class BetController {
           new PublicKey(recipient),
           amount,
         );
-        console.log('from worker', result);
-        if (result.success) {
+        if (!result) {
+          throw new Error('Transfer failed');
+        }
+        if (result && result.success) {
           // Update database after successful transfer
           const betsCollection = this.mongoClient.db('test').collection('bets');
           await betsCollection.findOneAndUpdate(
@@ -71,7 +67,9 @@ export class BetController {
           );
           return { success: true, message: 'Transfer processed successfully' };
         } else {
-          throw new Error('Transfer failed');
+          throw new Error(
+            'Transfer failed: ' + (result ? result.error : 'Unknown error'),
+          );
         }
       },
       {
