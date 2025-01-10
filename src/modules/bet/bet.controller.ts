@@ -54,7 +54,7 @@ export class BetController {
           new PublicKey(recipient),
           amount,
         );
-
+        console.log('from worker', result);
         if (result.success) {
           // Update database after successful transfer
           const betsCollection = this.mongoClient.db('test').collection('bets');

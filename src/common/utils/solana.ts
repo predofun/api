@@ -144,7 +144,7 @@ export class SolanaService {
       transaction.feePayer = this.feePayer.publicKey;
 
       const latestBlockhash =
-        await this.connection.getLatestBlockhash('processed');
+        await this.connection.getLatestBlockhash('confirmed');
       transaction.recentBlockhash = latestBlockhash.blockhash;
 
       transaction.sign(senderKeypair, this.feePayer);
@@ -239,6 +239,7 @@ export async function sponsorTransferUSDC(
         bs58.decode(base64ToBS58(senderPrivateKey)),
       );
     } catch (error) {
+      console.log('from decoding Keypair', error)
       console.log('Private Key is corrupt');
     }
   }
@@ -266,7 +267,6 @@ export async function sponsorTransferUSDC(
       console.log(`Transfer failed: ${result.error}`);
       return result;
     }
-    return result;
   } catch (error) {
     console.error(`Error: ${error.message}`);
   }
